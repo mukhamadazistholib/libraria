@@ -1,0 +1,251 @@
+// Prisma Schema untuk Digital Library ala Social Media (Libraria)
+// Compatible dengan Supabase Postgres / Neon.tech Serverless Postgres
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // Untuk Supabase direct connection saat migration
+}
+
+enum Role {
+  READER
+  ADMIN
+}
+
+enum LoanStatus {
+  ACTIVE
+  RETURNED
+  OVERDUE
+}
+
+enum RequestStatus {
+  DIAJUKAN
+  DITINJAU
+  DISETUJUI
+  DITOLAK
+}
+
+enum ActionType {
+  FINISHED_READING
+  STARTED_READING
+  RATED_BOOK
+  QUOTED_PASSAGE
+  BORROWED_BOOK
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  name            String
+  handle          String         @unique
+  role            Role           @default(READER)
+  avatar          String?
+  bio             String?        @db.Text
+  streakDays      Int            @default(1)
+  booksFinished   Int            @default(0)
+  pagesRead       Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relasi
+  loans           Loan[]
+  reviews         Review[]
+  activities      Activity[]
+  bookRequests    BookRequest[]
+  shelves         Shelf[]
+  upvotedRequests RequestUpvote[]
+  reviewLikes     ReviewLike[]
+
+  // Social Followers / Following (Self-relation)
+  followedBy      Follow[]       @relation("FollowedUsers")
+  following       Follow[]       @relation("FollowingUsers")
+
+  @@index([handle])
+  @@index([email])
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower    User     @relation("FollowingUsers", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("FollowedUsers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+}
+
+model Category {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  books Book[]
+}
+
+model Book {
+  id              String        @id @default(cuid())
+  title           String
+  author          String
+  isbn            String        @unique
+  description     String        @db.Text
+  coverUrl        String
+  language        String        @default("id")
+  publishedYear   Int
+  pages           Int
+  totalCopies     Int           @default(3)
+  availableCopies Int           @default(3)
+  rating          Float         @default(5.0)
+  ratingCount     Int           @default(0)
+  borrowCount     Int           @default(0)
+  epubStorageKey  String        // Key di Cloudflare R2: misal "books/epubs/filosofi-teras.epub"
+  featured        Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  categoryId      String
+  category        Category      @relation(fields: [categoryId], references: [id])
+
+  chapters        BookChapter[]
+  loans           Loan[]
+  reviews         Review[]
+  shelfItems      ShelfBook[]
+  activities      Activity[]
+
+  @@index([categoryId])
+  @@index([title])
+  @@index([author])
+}
+
+model BookChapter {
+  id              String   @id @default(cuid())
+  bookId          String
+  title           String
+  content         String   @db.Text
+  readTimeMinutes Int      @default(5)
+  orderIndex      Int      @default(0)
+
+  book            Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+}
+
+model Loan {
+  id                 String     @id @default(cuid())
+  userId             String
+  bookId             String
+  borrowedAt         DateTime   @default(now())
+  dueDate            DateTime   // Default 30 hari dari borrowedAt
+  returnedAt         DateTime?
+  status             LoanStatus @default(ACTIVE)
+  progressPercentage Int        @default(0)
+  lastLocationCfi    String?    // Simpan koordinat posisi baca terakhir epub.js
+  lastChapterId      String?
+  extensionsCount    Int        @default(0)
+
+  user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book               Book       @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([dueDate, status])
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  userId    String
+  bookId    String
+  rating    Int          // 1-5
+  comment   String       @db.Text
+  likes     Int          @default(0)
+  flagged   Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book      Book         @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  likedBy   ReviewLike[]
+
+  @@index([bookId])
+  @@index([userId])
+}
+
+model ReviewLike {
+  reviewId String
+  userId   String
+  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([reviewId, userId])
+}
+
+model Activity {
+  id            String     @id @default(cuid())
+  userId        String
+  bookId        String?
+  actionType    ActionType
+  quote         String?    @db.Text
+  reviewComment String?    @db.Text
+  rating        Int?
+  details       String?
+  createdAt     DateTime   @default(now())
+
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  book          Book?      @relation(fields: [bookId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model BookRequest {
+  id          String         @id @default(cuid())
+  userId      String
+  title       String
+  author      String
+  reason      String         @db.Text
+  status      RequestStatus  @default(DIAJUKAN)
+  upvotes     Int            @default(1)
+  adminNote   String?        @db.Text
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  upvotedBy   RequestUpvote[]
+
+  @@index([status])
+}
+
+model RequestUpvote {
+  requestId String
+  userId    String
+
+  request   BookRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([requestId, userId])
+}
+
+model Shelf {
+  id        String      @id @default(cuid())
+  userId    String
+  name      String
+  isDefault Boolean     @default(false)
+  createdAt DateTime    @default(now())
+
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  books     ShelfBook[]
+
+  @@index([userId])
+}
+
+model ShelfBook {
+  shelfId   String
+  bookId    String
+  addedAt   DateTime @default(now())
+
+  shelf     Shelf    @relation(fields: [shelfId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@id([shelfId, bookId])
+}

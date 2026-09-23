@@ -1,0 +1,7 @@
+{
+  "name": "Libraria - Substack Social Digital Library",
+  "description": "Platform peminjaman buku digital EPUB bernuansa social media ala Substack dengan fitur feed, e-reader, rak buku, dan dashboard admin.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
