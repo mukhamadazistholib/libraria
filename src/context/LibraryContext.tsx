@@ -23,7 +23,13 @@ import {
   INITIAL_SOCIAL_ACTIVITIES,
   INITIAL_CUSTOM_SHELVES
 } from '../data/mockData';
-import { supabase } from '../lib/supabase';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { 
+  fetchBooksFromSupabase, 
+  seedSupabaseDatabase, 
+  recordLoanToSupabase,
+  SeedResult 
+} from '../lib/supabaseData';
 
 interface LibraryContextType {
   theme: 'light' | 'dark';
@@ -44,6 +50,12 @@ interface LibraryContextType {
   readingHighlights: ReadingHighlight[];
   notifications: AppNotification[];
   unreadNotificationsCount: number;
+
+  // Supabase Database Sync & Seed
+  isSyncingSupabase: boolean;
+  isSupabaseLive: boolean;
+  syncSupabase: () => Promise<{ success: boolean; message: string; count?: number }>;
+  seedSupabase: () => Promise<SeedResult>;
   
   // Book actions
   borrowBook: (bookId: string) => { success: boolean; message: string };
@@ -259,6 +271,63 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem(`${STORAGE_KEY_PREFIX}user`, JSON.stringify(user));
   };
 
+  const [isSyncingSupabase, setIsSyncingSupabase] = useState(false);
+  const [isSupabaseLive, setIsSupabaseLive] = useState(isSupabaseConfigured);
+
+  // Initial fetch from Supabase if database has records
+  useEffect(() => {
+    fetchBooksFromSupabase().then(sbBooks => {
+      if (sbBooks && sbBooks.length > 0) {
+        setBooks(sbBooks);
+        setIsSupabaseLive(true);
+      }
+    }).catch(err => {
+      console.warn('Initial Supabase fetch skipped or failed:', err);
+    });
+  }, []);
+
+  const syncSupabase = async (): Promise<{ success: boolean; message: string; count?: number }> => {
+    setIsSyncingSupabase(true);
+    try {
+      const sbBooks = await fetchBooksFromSupabase();
+      if (sbBooks && sbBooks.length > 0) {
+        setBooks(sbBooks);
+        setIsSupabaseLive(true);
+        return { 
+          success: true, 
+          message: `Berhasil mengambil ${sbBooks.length} buku langsung dari database PostgreSQL Supabase!`,
+          count: sbBooks.length 
+        };
+      } else {
+        return { 
+          success: false, 
+          message: 'Tabel buku di database Supabase masih kosong (0 baris). Klik tombol "Seed Data ke Supabase" untuk mengisinya.' 
+        };
+      }
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Gagal menyinkronkan database.' };
+    } finally {
+      setIsSyncingSupabase(false);
+    }
+  };
+
+  const seedSupabase = async (): Promise<SeedResult> => {
+    setIsSyncingSupabase(true);
+    try {
+      const result = await seedSupabaseDatabase();
+      if (result.success) {
+        const sbBooks = await fetchBooksFromSupabase();
+        if (sbBooks && sbBooks.length > 0) {
+          setBooks(sbBooks);
+          setIsSupabaseLive(true);
+        }
+      }
+      return result;
+    } finally {
+      setIsSyncingSupabase(false);
+    }
+  };
+
   // Listen to Supabase Auth state and URL OAuth hash fragments (Google Sign-In)
   useEffect(() => {
     // 1. Cek jika URL mengandung hash access_token dari Google OAuth redirect
@@ -425,6 +494,11 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
 
     setLoans(prev => [newLoan, ...prev]);
+
+    // Record loan to Supabase PostgreSQL table
+    recordLoanToSupabase(newLoan).catch(err => {
+      console.warn('Supabase loan recording notice:', err);
+    });
 
     // Create social activity in feed
     const activity: SocialActivity = {
@@ -951,6 +1025,10 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         readingHighlights,
         notifications,
         unreadNotificationsCount,
+        isSyncingSupabase,
+        isSupabaseLive,
+        syncSupabase,
+        seedSupabase,
         borrowBook,
         returnBook,
         extendLoan,

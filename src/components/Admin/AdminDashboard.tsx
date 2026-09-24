@@ -15,7 +15,9 @@ import {
   Check, 
   X,
   Layers,
-  HelpCircle
+  HelpCircle,
+  Database,
+  Sparkles
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -30,10 +32,15 @@ export const AdminDashboard: React.FC = () => {
     adminDeleteBook, 
     adminUpdateBookRequestStatus,
     runOverdueCronCheck,
-    categories 
+    categories,
+    isSyncingSupabase,
+    isSupabaseLive,
+    syncSupabase,
+    seedSupabase
   } = useLibrary();
 
-  const [activeTab, setActiveTab] = useState<'stats' | 'books' | 'stock' | 'settings' | 'requests' | 'cron'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'books' | 'stock' | 'settings' | 'requests' | 'cron' | 'database'>('stats');
+  const [dbActionMessage, setDbActionMessage] = useState<{ type: 'success' | 'error' | 'info'; text: string; details?: any } | null>(null);
 
   // New Book Modal State
   const [showAddBookModal, setShowAddBookModal] = useState(false);
@@ -243,6 +250,21 @@ export const AdminDashboard: React.FC = () => {
         >
           <Clock className="w-4 h-4 text-[#ff6719]" />
           <span>Cron Auto-Return</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('database')}
+          className={`px-3.5 sm:px-4 py-2 rounded-lg font-semibold transition-all whitespace-nowrap flex items-center gap-2 ${
+            activeTab === 'database' 
+              ? 'bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a]' 
+              : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
+          }`}
+        >
+          <Database className="w-4 h-4 text-[#ff6719]" />
+          <span>Database Supabase</span>
+          {isSupabaseLive && (
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-0.5"></span>
+          )}
         </button>
       </div>
 
@@ -816,6 +838,159 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab: Database Supabase Synchronization */}
+      {activeTab === 'database' && (
+        <div className="space-y-6">
+          {/* Header Card */}
+          <div className="bg-white dark:bg-[#1a1a1e] p-5 sm:p-6 rounded-2xl border border-[#ded8cb] dark:border-[#27272a] shadow-xs">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="p-3 bg-[#ff6719]/10 rounded-xl text-[#ff6719]">
+                  <Database className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-editorial text-lg sm:text-xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">
+                      Integrasi Database PostgreSQL Supabase
+                    </h3>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                      LIVE CLOUD
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-1 max-w-2xl leading-relaxed">
+                    Sinkronkan katalog buku, bab naskah EPUB, kategori, dan transaksi sirkulasi peminjaman secara langsung dengan database PostgreSQL di project Supabase Anda.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
+                <button
+                  onClick={async () => {
+                    const res = await syncSupabase();
+                    setDbActionMessage({
+                      type: res.success ? 'success' : 'info',
+                      text: res.message,
+                      details: res,
+                    });
+                  }}
+                  disabled={isSyncingSupabase}
+                  className="px-3.5 py-2 bg-stone-100 dark:bg-[#202024] hover:bg-stone-200 dark:hover:bg-[#2a2a2e] text-[#1a1a1a] dark:text-[#f4f4f5] text-xs font-semibold rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isSyncingSupabase ? 'animate-spin' : ''}`} />
+                  <span>{isSyncingSupabase ? 'Menyinkronkan...' : 'Tarik Data dari Supabase'}</span>
+                </button>
+
+                <button
+                  onClick={async () => {
+                    const res = await seedSupabase();
+                    setDbActionMessage({
+                      type: res.success ? 'success' : 'error',
+                      text: res.message,
+                      details: res,
+                    });
+                  }}
+                  disabled={isSyncingSupabase}
+                  className="px-4 py-2 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{isSyncingSupabase ? 'Memproses Seed...' : '🌱 Seed Data ke Supabase'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Notification / Feedback Banner */}
+            {dbActionMessage && (
+              <div className={`mt-4 p-3.5 rounded-xl border text-xs flex items-start justify-between gap-3 ${
+                dbActionMessage.type === 'success' 
+                  ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200' 
+                  : dbActionMessage.type === 'error'
+                  ? 'bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800 text-red-900 dark:text-red-200'
+                  : 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200'
+              }`}>
+                <div className="space-y-1">
+                  <div className="font-semibold">{dbActionMessage.text}</div>
+                  {dbActionMessage.details?.booksCount && (
+                    <div className="text-[11px] opacity-80">
+                      Rincian: {dbActionMessage.details.categoriesCount} kategori, {dbActionMessage.details.booksCount} buku, dan {dbActionMessage.details.chaptersCount} bab naskah berhasil dimasukkan.
+                    </div>
+                  )}
+                </div>
+                <button 
+                  onClick={() => setDbActionMessage(null)}
+                  className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200 text-sm font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* Status Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-5 pt-5 border-t border-stone-200 dark:border-[#27272a]">
+              <div className="bg-stone-50 dark:bg-[#141416] p-3.5 rounded-xl border border-stone-200/80 dark:border-[#27272a]">
+                <span className="text-[10px] uppercase font-bold text-[#8c8880] tracking-wider block">
+                  Project Host Database
+                </span>
+                <p className="font-mono text-xs font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-1 truncate">
+                  zdbfxiughuxfttozfyxr.supabase.co
+                </p>
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                  Port: 5432 (PostgreSQL)
+                </span>
+              </div>
+
+              <div className="bg-stone-50 dark:bg-[#141416] p-3.5 rounded-xl border border-stone-200/80 dark:border-[#27272a]">
+                <span className="text-[10px] uppercase font-bold text-[#8c8880] tracking-wider block">
+                  Status Database Live
+                </span>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <p className="font-semibold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">
+                    Aktif & Terkoneksi
+                  </p>
+                </div>
+                <span className="text-[10px] text-[#59554e] dark:text-[#a1a1aa]">
+                  Katalog saat ini: {books.length} buku termuat
+                </span>
+              </div>
+
+              <div className="bg-stone-50 dark:bg-[#141416] p-3.5 rounded-xl border border-stone-200/80 dark:border-[#27272a]">
+                <span className="text-[10px] uppercase font-bold text-[#8c8880] tracking-wider block">
+                  Tabel Schema Prisma
+                </span>
+                <p className="font-semibold text-xs text-[#1a1a1a] dark:text-[#f4f4f5] mt-1">
+                  6 Tabel Utama Siap
+                </p>
+                <span className="text-[10px] font-mono text-zinc-500">
+                  Book, Category, BookChapter, Loan, User, Review
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Guide Card */}
+          <div className="bg-stone-50 dark:bg-[#141416] p-5 sm:p-6 rounded-2xl border border-stone-200 dark:border-[#27272a] space-y-3">
+            <h4 className="font-editorial text-sm sm:text-base font-bold text-[#1a1a1a] dark:text-[#f4f4f5] flex items-center gap-2">
+              <span className="text-[#ff6719]">💡</span>
+              <span>Langkah Pengisian Data Pertama Kali (Seeding):</span>
+            </h4>
+            <ol className="list-decimal list-inside space-y-2 text-xs text-[#59554e] dark:text-[#a1a1aa] leading-relaxed">
+              <li>
+                Klik tombol <strong className="text-[#ff6719]">"🌱 Seed Data ke Supabase"</strong> di atas.
+              </li>
+              <li>
+                Sistem akan secara otomatis mengirimkan seluruh data katalog buku (seperti <em>Filosofi Teras</em>, <em>Atomic Habits</em>, <em>Cantik Itu Luka</em>, dsb.) beserta bab bacaan EPUB-nya langsung ke tabel <code>Book</code> dan <code>BookChapter</code> di PostgreSQL Supabase Anda.
+              </li>
+              <li>
+                Anda dapat melihat seluruh baris data tersebut secara langsung di <strong>Supabase Dashboard &gt; Table Editor &gt; Book</strong>.
+              </li>
+              <li>
+                Setelah seeding berhasil, kapan pun ada penambahan atau pengubahan buku, seluruh pengguna di Vercel maupun browser mana pun akan melihat data yang sama secara serentak!
+              </li>
+            </ol>
           </div>
         </div>
       )}

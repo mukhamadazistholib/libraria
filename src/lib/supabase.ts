@@ -1,20 +1,31 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Default Supabase project URL yang sudah disiapkan untuk proyek Libraria
-const DEFAULT_SUPABASE_URL = 'https://zdbfxiughuxfttozfyxr.supabase.co';
+export const DEFAULT_SUPABASE_URL = 'https://zdbfxiughuxfttozfyxr.supabase.co';
 
-// Mendapatkan URL & Anon Key dari environment variable Vite atau fallback
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+export const getSupabaseConfig = () => {
+  const url = import.meta.env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL;
+  let key = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-export const isSupabaseConfigured = Boolean(
-  supabaseUrl && supabaseAnonKey && supabaseAnonKey !== 'YOUR_SUPABASE_ANON_KEY'
-);
+  if (!key && typeof window !== 'undefined') {
+    key = localStorage.getItem('libraria_supabase_anon_key') || '';
+  }
+
+  return {
+    url,
+    key,
+    isConfigured: Boolean(url && key && key !== 'YOUR_SUPABASE_ANON_KEY'),
+  };
+};
+
+const config = getSupabaseConfig();
+
+export const isSupabaseConfigured = config.isConfigured;
 
 // Inisialisasi Supabase client
 export const supabase = createClient(
-  supabaseUrl,
-  supabaseAnonKey || 'dummy-key-for-initialization',
+  config.url,
+  config.key || 'dummy-key-for-initialization',
   {
     auth: {
       persistSession: true,
