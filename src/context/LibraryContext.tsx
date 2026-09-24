@@ -23,6 +23,7 @@ import {
   INITIAL_SOCIAL_ACTIVITIES,
   INITIAL_CUSTOM_SHELVES
 } from '../data/mockData';
+import { supabase } from '../lib/supabase';
 
 interface LibraryContextType {
   theme: 'light' | 'dark';
@@ -257,6 +258,112 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setCurrentUserState(user);
     localStorage.setItem(`${STORAGE_KEY_PREFIX}user`, JSON.stringify(user));
   };
+
+  // Listen to Supabase Auth state and URL OAuth hash fragments (Google Sign-In)
+  useEffect(() => {
+    // 1. Cek jika URL mengandung hash access_token dari Google OAuth redirect
+    if (typeof window !== 'undefined' && window.location.hash.includes('access_token=')) {
+      try {
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        if (accessToken) {
+          // Parse JWT payload (part 1)
+          const parts = accessToken.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1]));
+            const email = payload.email || '';
+            const name = payload.user_metadata?.full_name || payload.user_metadata?.name || email.split('@')[0] || 'Pembaca Google';
+            const handle = email.split('@')[0] || 'pembaca';
+            const avatar = payload.user_metadata?.avatar_url || payload.user_metadata?.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${handle}`;
+
+            const authedUser: User = {
+              id: payload.sub || 'usr-google',
+              name,
+              handle,
+              email,
+              role: 'reader',
+              avatar,
+              bio: 'Pembaca aktif yang masuk melalui Akun Google.',
+              joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+              streakDays: 1,
+              booksFinished: 0,
+              pagesRead: 0,
+              followersCount: 0,
+              followingCount: 0,
+            };
+
+            setCurrentUser(authedUser);
+
+            // Bersihkan hash dari URL browser agar rapi
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
+        }
+      } catch (err) {
+        console.error('Gagal memproses OAuth hash token:', err);
+      }
+    }
+
+    // 2. Listener Supabase SDK session
+    try {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          const u = session.user;
+          const email = u.email || '';
+          const name = u.user_metadata?.full_name || u.user_metadata?.name || email.split('@')[0] || 'Pembaca Libraria';
+          const handle = email.split('@')[0] || 'pembaca';
+          const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${handle}`;
+
+          setCurrentUser({
+            id: u.id,
+            name,
+            handle,
+            email,
+            role: 'reader',
+            avatar,
+            bio: u.user_metadata?.bio || 'Pembaca terdaftar di perpustakaan digital Libraria.',
+            joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+            streakDays: 1,
+            booksFinished: 0,
+            pagesRead: 0,
+            followersCount: 0,
+            followingCount: 0,
+          });
+        }
+      });
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          const u = session.user;
+          const email = u.email || '';
+          const name = u.user_metadata?.full_name || u.user_metadata?.name || email.split('@')[0] || 'Pembaca Libraria';
+          const handle = email.split('@')[0] || 'pembaca';
+          const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${handle}`;
+
+          setCurrentUser({
+            id: u.id,
+            name,
+            handle,
+            email,
+            role: 'reader',
+            avatar,
+            bio: u.user_metadata?.bio || 'Pembaca terdaftar di perpustakaan digital Libraria.',
+            joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+            streakDays: 1,
+            booksFinished: 0,
+            pagesRead: 0,
+            followersCount: 0,
+            followingCount: 0,
+          });
+        }
+      });
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    } catch (err) {
+      console.warn('Supabase auth listener not active:', err);
+    }
+  }, []);
 
   // Borrow Book logic with validation & stock decrement
   const borrowBook = (bookId: string): { success: boolean; message: string } => {

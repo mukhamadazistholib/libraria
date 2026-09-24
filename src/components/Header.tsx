@@ -240,10 +240,19 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
               <button
                 onClick={onOpenAuth}
                 className="px-2.5 py-1 text-xs font-semibold bg-[#ff6719]/10 hover:bg-[#ff6719]/20 text-[#ff6719] border border-[#ff6719]/30 rounded-full transition-colors flex items-center gap-1.5 flex-shrink-0"
-                title="Kelola Akun Supabase (Masuk / Daftar)"
+                title="Kelola Akun Supabase (Masuk / Daftar / Keluar)"
               >
-                <LogIn className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Masuk</span>
+                {currentUser?.email ? (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="hidden sm:inline">Akun</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Masuk</span>
+                  </>
+                )}
               </button>
             )}
           </div>

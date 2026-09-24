@@ -111,7 +111,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         }
       }
     } catch (err: any) {
-      setErrorMessage(err.message || 'Terjadi kesalahan saat memproses autentikasi.');
+      const msg = err.message || '';
+      if (msg.includes('Unsupported provider') || msg.includes('provider is not enabled')) {
+        setErrorMessage(
+          mode === 'signup'
+            ? 'Provider Email belum diaktifkan di Supabase. Buka Dashboard Supabase -> Authentication -> Providers -> Pastikan "Email" diaktifkan (Enabled) & centang "Allow new users to sign up".'
+            : 'Provider login belum diaktifkan di Supabase. Buka Dashboard Supabase -> Authentication -> Providers.'
+        );
+      } else {
+        setErrorMessage(msg || 'Terjadi kesalahan saat memproses autentikasi.');
+      }
     } finally {
       setLoading(false);
     }
@@ -129,7 +138,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       });
       if (error) throw error;
     } catch (err: any) {
-      setErrorMessage(err.message || 'Gagal memulai login dengan Google.');
+      const msg = err.message || '';
+      if (msg.includes('Unsupported provider') || msg.includes('provider is not enabled')) {
+        setErrorMessage(
+          'Google Provider belum diaktifkan di Supabase. Buka Dashboard Supabase -> Authentication -> Providers -> Google, lalu masukkan Client ID & Secret Google Anda.'
+        );
+      } else {
+        setErrorMessage(msg || 'Gagal memulai login dengan Google.');
+      }
       setLoading(false);
     }
   };
