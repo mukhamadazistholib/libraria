@@ -56,6 +56,10 @@ interface LibraryContextType {
   isSupabaseLive: boolean;
   syncSupabase: () => Promise<{ success: boolean; message: string; count?: number }>;
   seedSupabase: () => Promise<SeedResult>;
+
+  // Super Admin RBAC (Restricted exclusively to mukhamadazistholib278@gmail.com)
+  isSuperAdmin: boolean;
+  superAdminEmail: string;
   
   // Book actions
   borrowBook: (bookId: string) => { success: boolean; message: string };
@@ -94,6 +98,13 @@ interface LibraryContextType {
 const LibraryContext = createContext<LibraryContextType | undefined>(undefined);
 
 const STORAGE_KEY_PREFIX = 'libraria_v1_';
+
+export const SUPER_ADMIN_EMAIL = 'mukhamadazistholib278@gmail.com';
+
+export const isUserSuperAdmin = (email?: string | null): boolean => {
+  if (!email) return false;
+  return email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+};
 
 export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -257,18 +268,31 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem(`${STORAGE_KEY_PREFIX}highlights`, JSON.stringify(readingHighlights));
   }, [readingHighlights]);
 
+  const isSuperAdmin = isUserSuperAdmin(currentUser?.email);
+
   const switchRole = (role: 'reader' | 'admin') => {
-    setActiveRole(role);
-    if (role === 'admin') {
-      setCurrentUserState(ADMIN_USER);
-    } else {
-      setCurrentUserState(CURRENT_USER);
+    if (role === 'admin' && !isSuperAdmin) {
+      console.warn('Akses ditolak: Hanya akun mukhamadazistholib278@gmail.com yang berwenang sebagai administrator.');
+      return;
     }
+    setActiveRole(role);
+    setCurrentUserState(prev => ({
+      ...prev,
+      role: role === 'admin' ? 'admin' : 'reader'
+    }));
   };
 
   const setCurrentUser = (user: User) => {
-    setCurrentUserState(user);
-    localStorage.setItem(`${STORAGE_KEY_PREFIX}user`, JSON.stringify(user));
+    const userIsSuperAdmin = isUserSuperAdmin(user.email);
+    const sanitizedUser: User = {
+      ...user,
+      role: userIsSuperAdmin ? 'admin' : 'reader'
+    };
+    setCurrentUserState(sanitizedUser);
+    if (!userIsSuperAdmin && activeRole === 'admin') {
+      setActiveRole('reader');
+    }
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}user`, JSON.stringify(sanitizedUser));
   };
 
   const [isSyncingSupabase, setIsSyncingSupabase] = useState(false);
@@ -855,8 +879,13 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }));
   };
 
-  // Admin Actions
+  // Admin Actions (Strictly guarded to SUPER_ADMIN_EMAIL: mukhamadazistholib278@gmail.com)
   const adminAddBook = (newBookData: Omit<Book, 'id' | 'createdAt' | 'availableCopies' | 'borrowCount' | 'rating' | 'ratingCount'>) => {
+    if (!isSuperAdmin) {
+      console.warn('Akses ditolak: Hanya akun mukhamadazistholib278@gmail.com yang berhak menambahkan buku ke katalog.');
+      return;
+    }
+
     const newBook: Book = {
       ...newBookData,
       id: `book-${Date.now()}`,
@@ -868,13 +897,53 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
     setBooks(prev => [newBook, ...prev]);
 
+    // Persist to PostgreSQL Supabase directly
+    if (isSupabaseConfigured) {
+      const now = new Date().toISOString();
+      supabase.from('Book').insert({
+        id: newBook.id,
+        title: newBook.title,
+        author: newBook.author,
+        isbn: newBook.isbn,
+        description: newBook.description,
+        coverUrl: newBook.coverUrl,
+        language: newBook.language,
+        publishedYear: newBook.publishedYear,
+        pages: newBook.pages,
+        totalCopies: newBook.totalCopies,
+        availableCopies: newBook.availableCopies,
+        rating: newBook.rating,
+        ratingCount: newBook.ratingCount,
+        borrowCount: newBook.borrowCount,
+        epubStorageKey: newBook.epubStorageKey || `books/${newBook.id}/book.epub`,
+        featured: Boolean(newBook.featured),
+        categoryId: newBook.categoryId,
+        createdAt: now,
+        updatedAt: now,
+      }).then(({ error }) => {
+        if (error) {
+          console.error('Gagal menyimpan buku baru ke Supabase:', error.message);
+        } else if (newBook.chapters && newBook.chapters.length > 0) {
+          const chaptersData = newBook.chapters.map((ch, idx) => ({
+            id: ch.id,
+            bookId: newBook.id,
+            title: ch.title,
+            content: ch.content,
+            readTimeMinutes: ch.readTimeMinutes || 5,
+            orderIndex: idx + 1,
+          }));
+          supabase.from('BookChapter').insert(chaptersData).then(null, err => console.warn(err));
+        }
+      });
+    }
+
     // Add activity to feed
     const activity: SocialActivity = {
       id: `act-${Date.now()}`,
-      userId: ADMIN_USER.id,
-      userName: ADMIN_USER.name,
-      userAvatar: ADMIN_USER.avatar,
-      userHandle: ADMIN_USER.handle,
+      userId: currentUser.id,
+      userName: currentUser.name,
+      userAvatar: currentUser.avatar,
+      userHandle: currentUser.handle,
       actionType: 'admin_uploaded',
       bookId: newBook.id,
       bookTitle: newBook.title,
@@ -889,11 +958,20 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const adminUpdateBookStock = (bookId: string, newTotalCopies: number) => {
+    if (!isSuperAdmin) return;
     setBooks(prev => prev.map(b => {
       if (b.id === bookId) {
         // active loans count
         const activeBorrowCount = loans.filter(l => l.bookId === bookId && l.status === 'active').length;
         const newAvailable = Math.max(0, newTotalCopies - activeBorrowCount);
+
+        if (isSupabaseConfigured) {
+          supabase.from('Book').update({
+            totalCopies: newTotalCopies,
+            availableCopies: newAvailable,
+          }).eq('id', bookId).then(null, err => console.warn(err));
+        }
+
         return {
           ...b,
           totalCopies: newTotalCopies,
@@ -905,10 +983,17 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const adminDeleteBook = (bookId: string) => {
+    if (!isSuperAdmin) return;
     setBooks(prev => prev.filter(b => b.id !== bookId));
+    if (isSupabaseConfigured) {
+      supabase.from('BookChapter').delete().eq('bookId', bookId).then(() => {
+        supabase.from('Book').delete().eq('id', bookId).then(null, err => console.warn(err));
+      }, err => console.warn(err));
+    }
   };
 
   const adminUpdateSystemSettings = (newSettings: Partial<SystemSettings>) => {
+    if (!isSuperAdmin) return;
     setSystemSettings(prev => ({
       ...prev,
       ...newSettings
@@ -916,6 +1001,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const adminUpdateBookRequestStatus = (requestId: string, status: 'disetujui' | 'ditolak' | 'ditinjau', note?: string) => {
+    if (!isSuperAdmin) return;
     setBookRequests(prev => prev.map(r => {
       if (r.id === requestId) {
         return {
@@ -1029,6 +1115,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         isSupabaseLive,
         syncSupabase,
         seedSupabase,
+        isSuperAdmin,
+        superAdminEmail: SUPER_ADMIN_EMAIL,
         borrowBook,
         returnBook,
         extendLoan,

@@ -38,7 +38,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
     clearAllNotifications,
     systemSettings,
     theme,
-    toggleTheme
+    toggleTheme,
+    isSuperAdmin
   } = useLibrary();
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -57,29 +58,38 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              <span className="text-[#a09e99] hidden md:inline text-[11px]">Peran:</span>
-              <button
-                onClick={() => switchRole(activeRole === 'reader' ? 'admin' : 'reader')}
-                className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all flex items-center gap-1.5 ${
-                  activeRole === 'admin' 
-                    ? 'bg-[#ff6719] text-white shadow-xs' 
-                    : 'bg-[#2e2e2e] text-[#e0ded8] hover:bg-[#3e3e3e]'
-                }`}
-                title="Beralih peran Pembaca / Administrator"
-              >
-                {activeRole === 'admin' ? (
-                  <>
-                    <ShieldAlert className="w-3 h-3" />
-                    <span>Mode Admin</span>
-                  </>
-                ) : (
-                  <>
-                    <UserCheck className="w-3 h-3" />
-                    <span>Mode Reader</span>
-                  </>
-                )}
-                <span className="text-[10px] opacity-70 underline hidden sm:inline ml-0.5">Ganti</span>
-              </button>
+              {isSuperAdmin ? (
+                <>
+                  <span className="text-[#a09e99] hidden md:inline text-[11px]">Peran:</span>
+                  <button
+                    onClick={() => switchRole(activeRole === 'reader' ? 'admin' : 'reader')}
+                    className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all flex items-center gap-1.5 ${
+                      activeRole === 'admin' 
+                        ? 'bg-[#ff6719] text-white shadow-xs' 
+                        : 'bg-[#2e2e2e] text-[#e0ded8] hover:bg-[#3e3e3e]'
+                    }`}
+                    title="Beralih peran Pembaca / Administrator"
+                  >
+                    {activeRole === 'admin' ? (
+                      <>
+                        <ShieldAlert className="w-3 h-3" />
+                        <span>Mode Admin</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserCheck className="w-3 h-3" />
+                        <span>Mode Reader</span>
+                      </>
+                    )}
+                    <span className="text-[10px] opacity-70 underline hidden sm:inline ml-0.5">Ganti</span>
+                  </button>
+                </>
+              ) : (
+                <div className="flex items-center gap-1.5 text-[11px] text-[#a09e99]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#ff6719]"></span>
+                  <span>Anggota Perpustakaan</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -312,20 +322,22 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
               Profil Pembaca
             </button>
 
-            {/* Admin Studio Tab Button */}
-            <div className="ml-auto pl-2">
-              <button
-                onClick={() => setActiveTab('admin')}
-                className={`px-3 py-1 rounded-md font-semibold text-xs transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                  activeTab === 'admin'
-                    ? 'bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a]'
-                    : 'bg-[#f4f0e8] dark:bg-[#202024] text-[#3d3a35] dark:text-[#d4d4d8] hover:bg-[#ebe6dc] dark:hover:bg-[#28282e] border border-[#d8d3c8] dark:border-[#333]'
-                }`}
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-[#ff6719]" />
-                <span>Studio Admin</span>
-              </button>
-            </div>
+            {/* Admin Studio Tab Button (Strictly restricted to mukhamadazistholib278@gmail.com) */}
+            {isSuperAdmin && (
+              <div className="ml-auto pl-2">
+                <button
+                  onClick={() => setActiveTab('admin')}
+                  className={`px-3 py-1 rounded-md font-semibold text-xs transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                    activeTab === 'admin'
+                      ? 'bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a]'
+                      : 'bg-[#f4f0e8] dark:bg-[#202024] text-[#3d3a35] dark:text-[#d4d4d8] hover:bg-[#ebe6dc] dark:hover:bg-[#28282e] border border-[#d8d3c8] dark:border-[#333]'
+                  }`}
+                >
+                  <SlidersHorizontal className="w-3.5 h-3.5 text-[#ff6719]" />
+                  <span>Studio Admin</span>
+                </button>
+              </div>
+            )}
           </div>
         </nav>
       </header>

@@ -36,7 +36,8 @@ export const AdminDashboard: React.FC = () => {
     isSyncingSupabase,
     isSupabaseLive,
     syncSupabase,
-    seedSupabase
+    seedSupabase,
+    isSuperAdmin
   } = useLibrary();
 
   const [activeTab, setActiveTab] = useState<'stats' | 'books' | 'stock' | 'settings' | 'requests' | 'cron' | 'database'>('stats');
@@ -89,6 +90,10 @@ export const AdminDashboard: React.FC = () => {
 
   const handleAddBookSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSuperAdmin) {
+      alert('Akses Ditolak: Hanya mukhamadazistholib278@gmail.com yang berhak menambahkan buku ke katalog perpustakaan.');
+      return;
+    }
     if (!newTitle.trim() || !newAuthor.trim()) return;
 
     const cat = categories.find(c => c.id === newCategoryId) || categories[1];
@@ -152,12 +157,13 @@ export const AdminDashboard: React.FC = () => {
       <div className="border-b border-[#eae6df] dark:border-[#27272a] pb-5 sm:pb-6 mb-6 sm:mb-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs uppercase tracking-widest font-semibold text-[#ff6719]">
                 Pusat Kendali Perpustakaan
               </span>
-              <span className="px-2 py-0.5 rounded bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-[10px] font-bold">
-                ADMIN ACCESS
+              <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-[10px] font-bold flex items-center gap-1">
+                <span>TERVERIFIKASI ADMIN:</span>
+                <span className="font-mono lowercase">mukhamadazistholib278@gmail.com</span>
               </span>
             </div>
             <h1 className="font-editorial text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#1a1a1a] dark:text-[#f4f4f5] mt-1">

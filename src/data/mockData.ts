@@ -26,14 +26,14 @@ export const CURRENT_USER: User = {
 };
 
 export const ADMIN_USER: User = {
-  id: 'usr-admin',
-  name: 'Pustakawan Utama',
-  handle: '@libraria_admin',
-  email: 'admin@libraria.library',
+  id: 'usr-superadmin',
+  name: 'Mukhamad Azis Tholib (Admin)',
+  handle: '@azis_admin',
+  email: 'mukhamadazistholib278@gmail.com',
   role: 'admin',
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=250&q=80',
-  bio: 'Kurator koleksi digital Libraria. Mengawasi sirkulasi dan lisensi buku digital perpustakaan.',
-  joinedDate: 'Agustus 2023',
+  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=250&q=80',
+  bio: 'Super Administrator & Kurator Utama Perpustakaan Digital Libraria.',
+  joinedDate: 'Januari 2024',
   streakDays: 45,
   booksFinished: 52,
   pagesRead: 14500,

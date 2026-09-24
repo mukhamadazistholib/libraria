@@ -11,9 +11,10 @@ import { BookRequestsView } from './components/Requests/BookRequestsView';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { AuthModal } from './components/Auth/AuthModal';
 import { Book } from './types';
+import { ShieldAlert } from 'lucide-react';
 
 const MainLayout: React.FC = () => {
-  const { activeRole } = useLibrary();
+  const { activeRole, isSuperAdmin } = useLibrary();
   const [activeTab, setActiveTab] = useState<'feed' | 'library' | 'my-books' | 'requests' | 'profile' | 'admin'>('feed');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [readingBook, setReadingBook] = useState<Book | null>(null);
@@ -77,7 +78,32 @@ const MainLayout: React.FC = () => {
         )}
 
         {activeTab === 'admin' && (
-          <AdminDashboard />
+          isSuperAdmin ? (
+            <AdminDashboard />
+          ) : (
+            <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-4">
+              <div className="w-14 h-14 bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto shadow-xs">
+                <ShieldAlert className="w-7 h-7" />
+              </div>
+              <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">
+                Hak Akses Administrator Terbatas
+              </h2>
+              <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] leading-relaxed max-w-md mx-auto">
+                Panel pengelolaan sistem, pengunggahan naskah digital, dan penambahan buku baru secara manual dibatasi secara khusus hanya untuk pemilik perpustakaan dengan email resmi:
+              </p>
+              <div className="inline-block px-3.5 py-1.5 bg-[#ff6719]/10 border border-[#ff6719]/30 rounded-lg text-[#ff6719] font-mono text-xs font-semibold">
+                mukhamadazistholib278@gmail.com
+              </div>
+              <div className="pt-2">
+                <button
+                  onClick={() => handleTabChange('library')}
+                  className="px-5 py-2.5 bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  Kembali Menjelajah Katalog
+                </button>
+              </div>
+            </div>
+          )
         )}
       </main>
 
