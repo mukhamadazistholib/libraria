@@ -211,6 +211,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               </span>
             </div>
 
+            {/* URL Redirect Info */}
+            <div className="mt-2.5 pt-2 border-t border-[#ded8ce] dark:border-[#2a2a2e] text-[11px] text-[#6b665e] dark:text-[#a1a1aa] space-y-1">
+              <div className="flex items-center justify-between">
+                <span>App URL saat ini:</span>
+                <code className="text-[10px] font-mono bg-white dark:bg-black/30 px-1 py-0.5 rounded border border-[#ded8ce] dark:border-[#333]">
+                  {typeof window !== 'undefined' ? window.location.origin : ''}
+                </code>
+              </div>
+              <p className="text-[10px] text-[#8c8880] leading-tight">
+                Agar Google redirect kembali ke URL cloud (bukan localhost), pastikan URL di atas disalin ke <strong>Supabase Dashboard &gt; Authentication &gt; URL Configuration &gt; Site URL</strong>.
+              </p>
+            </div>
+
             {!isLiveConnected && (
               <div className="mt-2.5 pt-2.5 border-t border-[#ded8ce] dark:border-[#2a2a2e] space-y-2">
                 <p className="text-[11px] text-[#6b665e] dark:text-[#a1a1aa] leading-relaxed">
