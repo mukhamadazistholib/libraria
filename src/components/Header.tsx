@@ -16,16 +16,18 @@ import {
   Layers, 
   User, 
   HelpCircle,
-  TrendingUp
+  TrendingUp,
+  LogIn
 } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onOpenSearch: () => void;
+  onOpenAuth?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenSearch }) => {
+export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenSearch, onOpenAuth }) => {
   const { 
     currentUser, 
     activeRole, 
@@ -232,6 +234,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                 {currentUser.name}
               </span>
             </button>
+
+            {/* Supabase Auth Trigger Button */}
+            {onOpenAuth && (
+              <button
+                onClick={onOpenAuth}
+                className="px-2.5 py-1 text-xs font-semibold bg-[#ff6719]/10 hover:bg-[#ff6719]/20 text-[#ff6719] border border-[#ff6719]/30 rounded-full transition-colors flex items-center gap-1.5 flex-shrink-0"
+                title="Kelola Akun Supabase (Masuk / Daftar)"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Masuk</span>
+              </button>
+            )}
           </div>
         </div>
 

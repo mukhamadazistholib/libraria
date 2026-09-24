@@ -9,6 +9,7 @@ import { LoansView } from './components/Loans/LoansView';
 import { ProfileView } from './components/Profile/ProfileView';
 import { BookRequestsView } from './components/Requests/BookRequestsView';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
+import { AuthModal } from './components/Auth/AuthModal';
 import { Book } from './types';
 
 const MainLayout: React.FC = () => {
@@ -16,6 +17,7 @@ const MainLayout: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'feed' | 'library' | 'my-books' | 'requests' | 'profile' | 'admin'>('feed');
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [readingBook, setReadingBook] = useState<Book | null>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab as any);
@@ -34,6 +36,7 @@ const MainLayout: React.FC = () => {
         activeTab={activeTab}
         setActiveTab={handleTabChange}
         onOpenSearch={() => handleTabChange('library')}
+        onOpenAuth={() => setIsAuthOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -69,6 +72,7 @@ const MainLayout: React.FC = () => {
           <ProfileView
             onSelectBook={(book) => setSelectedBook(book)}
             onOpenReader={handleOpenReader}
+            onOpenAuth={() => setIsAuthOpen(true)}
           />
         )}
 
@@ -76,6 +80,12 @@ const MainLayout: React.FC = () => {
           <AdminDashboard />
         )}
       </main>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+      />
 
       {/* Book Detail Modal */}
       {selectedBook && (

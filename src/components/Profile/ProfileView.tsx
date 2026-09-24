@@ -10,15 +10,17 @@ import {
   Heart, 
   Star, 
   Sparkles,
-  Edit3
+  Edit3,
+  ShieldCheck
 } from 'lucide-react';
 
 interface ProfileViewProps {
   onSelectBook: (book: Book) => void;
   onOpenReader: (book: Book) => void;
+  onOpenAuth?: () => void;
 }
 
-export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenReader }) => {
+export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenReader, onOpenAuth }) => {
   const { 
     currentUser, 
     setCurrentUser, 
@@ -99,8 +101,19 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
             </div>
           </div>
 
-          {/* Follow & Edit buttons */}
-          <div className="flex items-center gap-2.5 self-stretch sm:self-auto justify-end">
+          {/* Follow & Edit & Auth buttons */}
+          <div className="flex items-center gap-2.5 self-stretch sm:self-auto justify-end flex-wrap">
+            {onOpenAuth && (
+              <button
+                onClick={onOpenAuth}
+                className="px-3.5 py-2 rounded-lg bg-[#ff6719]/10 hover:bg-[#ff6719]/20 text-xs font-semibold text-[#ff6719] border border-[#ff6719]/30 transition-colors flex items-center gap-1.5"
+                title="Kelola Akun Supabase Auth"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Akun Supabase</span>
+              </button>
+            )}
+
             <button
               onClick={() => setIsEditingBio(true)}
               className="px-3.5 py-2 rounded-lg border border-[#ded8cb] dark:border-[#333] hover:bg-[#f7f4ed] dark:hover:bg-[#202024] text-xs font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] transition-colors flex items-center gap-1.5"
