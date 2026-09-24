@@ -129,3 +129,62 @@
     7px 0 0 -3px #18181b,
     9px 0 0 -4px #121214;
 }
+
+/* E-Reader Multi-column Pagination - Zero Vertical Scrollbar & Google Play Books Typographic Rules */
+.epub-column-flow {
+  column-fill: auto;
+  box-sizing: border-box;
+}
+
+.epub-content {
+  box-sizing: border-box;
+}
+
+.epub-content p {
+  margin-top: 0;
+  margin-bottom: 0.9em;
+  orphans: 2;
+  widows: 2;
+  break-inside: auto;
+  page-break-inside: auto;
+}
+
+.epub-content h1,
+.epub-content h2,
+.epub-content h3,
+.epub-content h4,
+.epub-content h5,
+.epub-content h6,
+.epub-content blockquote,
+.epub-content table,
+.epub-content figure,
+.epub-content img {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  max-width: 100%;
+}
+
+.epub-content img {
+  max-height: 70vh;
+  object-fit: contain;
+  margin: 1rem auto;
+  display: block;
+}
+
+.epub-content blockquote {
+  border-left: 3px solid currentColor;
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  opacity: 0.85;
+  font-style: italic;
+}
+
+/* Hide scrollbars completely inside reader container */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
