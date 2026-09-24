@@ -99,11 +99,16 @@ const LibraryContext = createContext<LibraryContextType | undefined>(undefined);
 
 const STORAGE_KEY_PREFIX = 'libraria_v1_';
 
-export const SUPER_ADMIN_EMAIL = 'mukhamadazistholib278@gmail.com';
+export const SUPER_ADMIN_EMAIL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ADMIN_EMAIL) || 'mukhamadazistholib278@gmail.com';
 
-export const isUserSuperAdmin = (email?: string | null): boolean => {
-  if (!email) return false;
-  return email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+export const isUserSuperAdmin = (userOrEmail?: { email?: string; role?: string } | string | null): boolean => {
+  if (!userOrEmail) return false;
+  if (typeof userOrEmail === 'object') {
+    if (userOrEmail.role === 'admin') return true;
+    if (userOrEmail.email && userOrEmail.email.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) return true;
+    return false;
+  }
+  return userOrEmail.trim().toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
 };
 
 export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -268,11 +273,11 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     localStorage.setItem(`${STORAGE_KEY_PREFIX}highlights`, JSON.stringify(readingHighlights));
   }, [readingHighlights]);
 
-  const isSuperAdmin = isUserSuperAdmin(currentUser?.email);
+  const isSuperAdmin = isUserSuperAdmin(currentUser);
 
   const switchRole = (role: 'reader' | 'admin') => {
     if (role === 'admin' && !isSuperAdmin) {
-      console.warn('Akses ditolak: Hanya akun mukhamadazistholib278@gmail.com yang berwenang sebagai administrator.');
+      console.warn('Access denied: Administrator privileges required.');
       return;
     }
     setActiveRole(role);
@@ -283,7 +288,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const setCurrentUser = (user: User) => {
-    const userIsSuperAdmin = isUserSuperAdmin(user.email);
+    const userIsSuperAdmin = isUserSuperAdmin(user);
     const sanitizedUser: User = {
       ...user,
       role: userIsSuperAdmin ? 'admin' : 'reader'
@@ -319,17 +324,17 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setIsSupabaseLive(true);
         return { 
           success: true, 
-          message: `Berhasil mengambil ${sbBooks.length} buku langsung dari database PostgreSQL Supabase!`,
+          message: `Successfully loaded ${sbBooks.length} books directly from Supabase PostgreSQL database!`,
           count: sbBooks.length 
         };
       } else {
         return { 
           success: false, 
-          message: 'Tabel buku di database Supabase masih kosong (0 baris). Klik tombol "Seed Data ke Supabase" untuk mengisinya.' 
+          message: 'The Supabase database currently has 0 books. Click "Seed Data to Supabase" to populate initial records.' 
         };
       }
     } catch (err: any) {
-      return { success: false, message: err.message || 'Gagal menyinkronkan database.' };
+      return { success: false, message: err.message || 'Failed to synchronize database.' };
     } finally {
       setIsSyncingSupabase(false);
     }
@@ -376,8 +381,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
               email,
               role: 'reader',
               avatar,
-              bio: 'Pembaca aktif yang masuk melalui Akun Google.',
-              joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+              bio: 'Active reader signed in via Google Account.',
+              joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
               streakDays: 1,
               booksFinished: 0,
               pagesRead: 0,
@@ -387,12 +392,12 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
             setCurrentUser(authedUser);
 
-            // Bersihkan hash dari URL browser agar rapi
+            // Clean up hash from URL
             window.history.replaceState(null, '', window.location.pathname + window.location.search);
           }
         }
       } catch (err) {
-        console.error('Gagal memproses OAuth hash token:', err);
+        console.error('Failed to parse OAuth hash token:', err);
       }
     }
 
@@ -402,8 +407,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (session?.user) {
           const u = session.user;
           const email = u.email || '';
-          const name = u.user_metadata?.full_name || u.user_metadata?.name || email.split('@')[0] || 'Pembaca Libraria';
-          const handle = email.split('@')[0] || 'pembaca';
+          const name = u.user_metadata?.full_name || u.user_metadata?.name || email.split('@')[0] || 'Libraria Reader';
+          const handle = email.split('@')[0] || 'reader';
           const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${handle}`;
 
           setCurrentUser({
@@ -413,8 +418,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
             email,
             role: 'reader',
             avatar,
-            bio: u.user_metadata?.bio || 'Pembaca terdaftar di perpustakaan digital Libraria.',
-            joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+            bio: u.user_metadata?.bio || 'Registered reader at Libraria digital library.',
+            joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
             streakDays: 1,
             booksFinished: 0,
             pagesRead: 0,
@@ -428,8 +433,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (session?.user) {
           const u = session.user;
           const email = u.email || '';
-          const name = u.user_metadata?.full_name || u.user_metadata?.name || email.split('@')[0] || 'Pembaca Libraria';
-          const handle = email.split('@')[0] || 'pembaca';
+          const name = u.user_metadata?.full_name || u.user_metadata?.name || email.split('@')[0] || 'Libraria Reader';
+          const handle = email.split('@')[0] || 'reader';
           const avatar = u.user_metadata?.avatar_url || u.user_metadata?.picture || `https://api.dicebear.com/7.x/notionists/svg?seed=${handle}`;
 
           setCurrentUser({
@@ -439,8 +444,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
             email,
             role: 'reader',
             avatar,
-            bio: u.user_metadata?.bio || 'Pembaca terdaftar di perpustakaan digital Libraria.',
-            joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+            bio: u.user_metadata?.bio || 'Registered reader at Libraria digital library.',
+            joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
             streakDays: 1,
             booksFinished: 0,
             pagesRead: 0,
@@ -462,13 +467,13 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const borrowBook = (bookId: string): { success: boolean; message: string } => {
     const book = books.find(b => b.id === bookId);
     if (!book) {
-      return { success: false, message: 'Buku tidak ditemukan dalam katalog perpustakaan.' };
+      return { success: false, message: 'Book not found in library catalog.' };
     }
 
     // 1. Check if user already has an active loan for this book
     const existingLoan = loans.find(l => l.userId === currentUser.id && l.bookId === bookId && l.status === 'active');
     if (existingLoan) {
-      return { success: false, message: 'Anda sudah sedang meminjam buku ini. Buka rak Buku Saya untuk melanjutkan membaca.' };
+      return { success: false, message: 'You already have an active loan for this book. Visit "My Books" to resume reading.' };
     }
 
     // 2. Check user's active loan quota against systemSettings.maxBorrowPerUser
@@ -476,7 +481,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (activeLoans.length >= systemSettings.maxBorrowPerUser) {
       return {
         success: false,
-        message: `Batas kuota pinjam tercapai! Maksimal ${systemSettings.maxBorrowPerUser} buku aktif secara bersamaan.`
+        message: `Loan quota limit reached! You may borrow up to ${systemSettings.maxBorrowPerUser} active books at a time.`
       };
     }
 
@@ -484,7 +489,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (book.availableCopies <= 0) {
       return {
         success: false,
-        message: 'Seluruh eksemplar digital saat ini sedang dipinjam pembaca lain. Silakan klik tombol "Antre / Notify Me".'
+        message: 'All digital copies of this title are currently loaned out. Please check back later.'
       };
     }
 
@@ -536,7 +541,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       bookTitle: book.title,
       bookAuthor: book.author,
       bookCover: book.coverUrl,
-      timestamp: 'Baru saja',
+      timestamp: 'Just now',
       likes: 0,
       likedBy: []
     };
@@ -547,21 +552,21 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       id: `notif-${Date.now()}`,
       userId: currentUser.id,
       type: 'new_book_alert',
-      title: 'Peminjaman Berhasil',
-      message: `Buku "${book.title}" berhasil dipinjam selama ${systemSettings.borrowDurationDays} hari. Selamat membaca!`,
+      title: 'Loan Confirmed',
+      message: `"${book.title}" borrowed successfully for ${systemSettings.borrowDurationDays} days. Enjoy your reading!`,
       bookId: book.id,
-      createdAt: 'Baru saja',
+      createdAt: 'Just now',
       read: false
     };
     setNotifications(prev => [notif, ...prev]);
 
-    return { success: true, message: `Buku "${book.title}" berhasil dipinjam. Masa pinjam berlaku selama ${systemSettings.borrowDurationDays} hari.` };
+    return { success: true, message: `"${book.title}" borrowed successfully. Active for ${systemSettings.borrowDurationDays} days.` };
   };
 
   // Return book manually
   const returnBook = (loanId: string): { success: boolean; message: string } => {
     const loan = loans.find(l => l.id === loanId);
-    if (!loan) return { success: false, message: 'Catatan peminjaman tidak ditemukan.' };
+    if (!loan) return { success: false, message: 'Loan record not found.' };
 
     const book = books.find(b => b.id === loan.bookId);
 
@@ -598,19 +603,19 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }));
     }
 
-    return { success: true, message: 'Buku berhasil dikembalikan. Slot peminjaman Anda telah diperbarui.' };
+    return { success: true, message: 'Book returned successfully. Your loan quota has been refreshed.' };
   };
 
   // Extend loan
   const extendLoan = (loanId: string): { success: boolean; message: string } => {
     if (!systemSettings.allowExtendLoan) {
-      return { success: false, message: 'Perpanjangan masa pinjam saat ini dinonaktifkan oleh administrator perpustakaan.' };
+      return { success: false, message: 'Loan extensions are currently disabled by the library administrator.' };
     }
 
     const loan = loans.find(l => l.id === loanId);
-    if (!loan) return { success: false, message: 'Data peminjaman tidak ditemukan.' };
+    if (!loan) return { success: false, message: 'Loan record not found.' };
     if (loan.extensionsCount >= 1) {
-      return { success: false, message: 'Buku ini sudah pernah diperpanjang. Maksimal perpanjangan adalah 1 kali per masa pinjam.' };
+      return { success: false, message: 'This book has already been extended. Limit is 1 extension per loan.' };
     }
 
     const currentDue = new Date(loan.dueDate);
@@ -629,7 +634,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     return {
       success: true,
-      message: `Masa pinjam berhasil diperpanjang +${systemSettings.maxExtendDays} hari. Tanggal baru: ${currentDue.toLocaleDateString('id-ID')}`
+      message: `Loan extended by +${systemSettings.maxExtendDays} days. New due date: ${currentDue.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
     };
   };
 
@@ -862,7 +867,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       description,
       isPublic,
       bookIds: [],
-      createdAt: new Date().toLocaleDateString('id-ID')
+      createdAt: new Date().toLocaleDateString('en-US')
     };
     setCustomShelves(prev => [newShelf, ...prev]);
   };
@@ -882,7 +887,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Admin Actions (Strictly guarded to SUPER_ADMIN_EMAIL: mukhamadazistholib278@gmail.com)
   const adminAddBook = (newBookData: Omit<Book, 'id' | 'createdAt' | 'availableCopies' | 'borrowCount' | 'rating' | 'ratingCount'>) => {
     if (!isSuperAdmin) {
-      console.warn('Akses ditolak: Hanya akun mukhamadazistholib278@gmail.com yang berhak menambahkan buku ke katalog.');
+      console.warn('Access denied: Only mukhamadazistholib278@gmail.com is authorized to add books to the catalog.');
       return;
     }
 
@@ -922,7 +927,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updatedAt: now,
       }).then(({ error }) => {
         if (error) {
-          console.error('Gagal menyimpan buku baru ke Supabase:', error.message);
+          console.error('Failed to save new book to Supabase:', error.message);
         } else if (newBook.chapters && newBook.chapters.length > 0) {
           const chaptersData = newBook.chapters.map((ch, idx) => ({
             id: ch.id,
@@ -949,8 +954,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
       bookTitle: newBook.title,
       bookAuthor: newBook.author,
       bookCover: newBook.coverUrl,
-      details: `Koleksi baru telah ditambahkan ke katalog digital: ${newBook.totalCopies} slot pinjam tersedia.`,
-      timestamp: 'Baru saja',
+      details: `New title added to digital catalog: ${newBook.totalCopies} borrow slots available.`,
+      timestamp: 'Just now',
       likes: 0,
       likedBy: []
     };
@@ -1017,7 +1022,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // Cron Job Simulation (Vercel Cron + QStash Auto-Return pipeline)
   const runOverdueCronCheck = (): { processedCount: number; returnedBooks: string[]; logs: string[] } => {
     const logs: string[] = [];
-    logs.push(`[${new Date().toLocaleTimeString('id-ID')}] CRON INITIALIZED: Endpoint /api/cron/check-overdue-loans dipicu oleh Vercel Cron.`);
+    logs.push(`[${new Date().toLocaleTimeString('en-US')}] CRON INITIALIZED: Endpoint /api/cron/check-overdue-loans triggered by Vercel Cron.`);
     
     const now = new Date();
     const returnedBookTitles: string[] = [];
@@ -1032,8 +1037,8 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         const book = books.find(b => b.id === loan.bookId);
         const title = book?.title || loan.bookId;
         returnedBookTitles.push(title);
-        logs.push(`[AUTO-RETURN] Peminjaman ${loan.id} untuk "${title}" (User ${loan.userId}) melewati jatuh tempo. Status diubah ke 'returned'.`);
-        logs.push(`[QSTASH QUEUE] Mengirim webhook notifikasi pengembalian otomatis ke /api/notify -> Resend email gateway.`);
+        logs.push(`[AUTO-RETURN] Loan ${loan.id} for "${title}" (User ${loan.userId}) is overdue. Status updated to 'returned'.`);
+        logs.push(`[QSTASH QUEUE] Dispatched auto-return notification webhook to /api/notify -> Resend email gateway.`);
         
         return {
           ...loan,
@@ -1064,17 +1069,17 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
         id: `notif-cron-${Date.now()}`,
         userId: currentUser.id,
         type: 'loan_auto_returned',
-        title: 'Pengembalian Otomatis (Auto-Return)',
-        message: `${processed} buku yang melewati batas pinjam telah dikembalikan otomatis oleh sistem perpustakaan.`,
-        createdAt: 'Baru saja',
+        title: 'Auto-Return Processed',
+        message: `${processed} books past their due date have been automatically returned to the library.`,
+        createdAt: 'Just now',
         read: false
       };
       setNotifications(prev => [notif, ...prev]);
 
-      logs.push(`[COMPLETED] Berhasil memproses ${processed} buku jatuh tempo. Slot stok telah dirilis ke publik.`);
+      logs.push(`[COMPLETED] Successfully processed ${processed} overdue book(s). Available slots restored.`);
     } else {
-      logs.push(`[INFO] Semua peminjaman aktif masih dalam periode berlaku. Tidak ada pinjaman overdue yang perlu dikembalikan saat ini.`);
-      logs.push(`[HEALTH CHECK] Status distributed locks di Upstash Redis: OK. Integritas data: 100%.`);
+      logs.push(`[INFO] All active loans are within valid borrow window. No overdue items to return.`);
+      logs.push(`[HEALTH CHECK] Distributed locks on Upstash Redis: OK. Data integrity: 100%.`);
     }
 
     return { processedCount: processed, returnedBooks: returnedBookTitles, logs };

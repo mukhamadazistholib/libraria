@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { supabase, isSupabaseConfigured, getAuthRedirectUrl, PRODUCTION_SITE_URL } from '../../lib/supabase';
 import { useLibrary } from '../../context/LibraryContext';
-import { X, Mail, Lock, User, ArrowRight, ShieldCheck, AlertCircle, LogOut, CheckCircle, Key } from 'lucide-react';
+import { X, Mail, Lock, User, ArrowRight, ShieldCheck, AlertCircle, LogOut, CheckCircle, Key, Globe } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -18,10 +18,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [customAnonKey, setCustomAnonKey] = useState(() => localStorage.getItem('libraria_supabase_anon_key') || '');
+  const [redirectUrl, setRedirectUrl] = useState(() => getAuthRedirectUrl());
   const [isLiveConnected, setIsLiveConnected] = useState(isSupabaseConfigured);
 
   useEffect(() => {
-    // Cek session aktif dari Supabase jika configured
+    // Check active session from Supabase if configured
     if (isLiveConnected) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         if (session?.user) {
@@ -40,8 +41,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   }, [isLiveConnected]);
 
   const syncUserFromSupabase = (sbUser: any) => {
-    const name = sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'Pembaca Libraria';
-    const handle = sbUser.email?.split('@')[0] || 'pembaca';
+    const name = sbUser.user_metadata?.full_name || sbUser.email?.split('@')[0] || 'Libraria Reader';
+    const handle = sbUser.email?.split('@')[0] || 'reader';
     setCurrentUser({
       id: sbUser.id,
       name,
@@ -49,8 +50,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       email: sbUser.email || '',
       role: 'reader',
       avatar: sbUser.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/notionists/svg?seed=${handle}`,
-      bio: sbUser.user_metadata?.bio || 'Anggota terdaftar di perpustakaan digital Libraria.',
-      joinedDate: new Date().toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+      bio: sbUser.user_metadata?.bio || 'Registered reader at Libraria digital library.',
+      joinedDate: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
       streakDays: 1,
       booksFinished: 0,
       pagesRead: 0,
@@ -63,8 +64,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     if (!customAnonKey.trim()) return;
     localStorage.setItem('libraria_supabase_anon_key', customAnonKey.trim());
     setIsLiveConnected(true);
-    setSuccessMessage('Supabase Anon Key berhasil disimpan! Anda sekarang terhubung secara live.');
+    setSuccessMessage('Supabase Anon Key saved successfully! Live connection active.');
     setTimeout(() => setSuccessMessage(null), 4000);
+  };
+
+  const handleSaveRedirectUrl = (url: string) => {
+    setRedirectUrl(url);
+    localStorage.setItem('libraria_auth_redirect_url', url);
+    setSuccessMessage(`Redirect URL set to: ${url}`);
+    setTimeout(() => setSuccessMessage(null), 3000);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,10 +98,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         if (data.session) {
           syncUserFromSupabase(data.session.user);
-          setSuccessMessage('Pendaftaran berhasil! Selamat datang di Libraria.');
+          setSuccessMessage('Registration successful! Welcome to Libraria.');
           setTimeout(onClose, 1500);
         } else {
-          setSuccessMessage('Akun berhasil didaftarkan! Silakan cek email Anda untuk konfirmasi atau masuk.');
+          setSuccessMessage('Account registered! Please check your email for confirmation or sign in.');
           setMode('signin');
         }
       } else {
@@ -106,7 +114,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         if (data.user) {
           syncUserFromSupabase(data.user);
-          setSuccessMessage('Berhasil masuk! Selamat membaca.');
+          setSuccessMessage('Successfully signed in! Happy reading.');
           setTimeout(onClose, 1200);
         }
       }
@@ -115,11 +123,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       if (msg.includes('Unsupported provider') || msg.includes('provider is not enabled')) {
         setErrorMessage(
           mode === 'signup'
-            ? 'Provider Email belum diaktifkan di Supabase. Buka Dashboard Supabase -> Authentication -> Providers -> Pastikan "Email" diaktifkan (Enabled) & centang "Allow new users to sign up".'
-            : 'Provider login belum diaktifkan di Supabase. Buka Dashboard Supabase -> Authentication -> Providers.'
+            ? 'Email provider is not enabled in Supabase. Go to Supabase Dashboard -> Authentication -> Providers -> enable Email and check "Allow new users to sign up".'
+            : 'Authentication provider is not enabled in Supabase. Check Supabase Dashboard -> Authentication -> Providers.'
         );
       } else {
-        setErrorMessage(msg || 'Terjadi kesalahan saat memproses autentikasi.');
+        setErrorMessage(msg || 'An error occurred during authentication.');
       }
     } finally {
       setLoading(false);
@@ -130,10 +138,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     setLoading(true);
     setErrorMessage(null);
     try {
+      const targetUrl = redirectUrl || getAuthRedirectUrl();
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: targetUrl,
         },
       });
       if (error) throw error;
@@ -141,10 +150,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       const msg = err.message || '';
       if (msg.includes('Unsupported provider') || msg.includes('provider is not enabled')) {
         setErrorMessage(
-          'Google Provider belum diaktifkan di Supabase. Buka Dashboard Supabase -> Authentication -> Providers -> Google, lalu masukkan Client ID & Secret Google Anda.'
+          'Google Provider is not enabled in Supabase. Go to Supabase Dashboard -> Authentication -> Providers -> Google, then enter your Google Client ID & Secret.'
         );
       } else {
-        setErrorMessage(msg || 'Gagal memulai login dengan Google.');
+        setErrorMessage(msg || 'Failed to initiate Google sign in.');
       }
       setLoading(false);
     }
@@ -155,7 +164,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     try {
       await supabase.auth.signOut();
       localStorage.removeItem('libraria_supabase_anon_key');
-      setSuccessMessage('Anda telah keluar dari akun.');
+      setSuccessMessage('You have been signed out.');
       setTimeout(onClose, 1000);
     } catch (err: any) {
       setErrorMessage(err.message);
@@ -180,10 +189,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
             <div>
               <h3 className="font-editorial text-lg font-bold text-[#1a1a1a] dark:text-[#f4f4f5] leading-none">
-                Autentikasi Akun Pembaca
+                Reader Authentication
               </h3>
               <p className="text-[11px] text-[#716e68] dark:text-[#a1a1aa] mt-0.5">
-                Terhubung dengan Supabase Auth Cloud
+                Connected to Supabase Auth Cloud
               </p>
             </div>
           </div>
@@ -203,7 +212,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div className="flex items-center gap-2">
                 <span className={`w-2 h-2 rounded-full ${isLiveConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
                 <span className="font-semibold text-[#2c2a26] dark:text-[#e4e4e7]">
-                  {isLiveConnected ? 'Supabase Auth Terhubung' : 'Anon Key Diperlukan'}
+                  {isLiveConnected ? 'Supabase Auth Connected' : 'Anon Key Required'}
                 </span>
               </div>
               <span className="text-[10px] text-[#8a857c] font-mono">
@@ -212,22 +221,48 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             </div>
 
             {/* URL Redirect Info */}
-            <div className="mt-2.5 pt-2 border-t border-[#ded8ce] dark:border-[#2a2a2e] text-[11px] text-[#6b665e] dark:text-[#a1a1aa] space-y-1">
+            <div className="mt-2.5 pt-2 border-t border-[#ded8ce] dark:border-[#2a2a2e] text-[11px] text-[#6b665e] dark:text-[#a1a1aa] space-y-1.5">
               <div className="flex items-center justify-between">
-                <span>App URL saat ini:</span>
-                <code className="text-[10px] font-mono bg-white dark:bg-black/30 px-1 py-0.5 rounded border border-[#ded8ce] dark:border-[#333]">
-                  {typeof window !== 'undefined' ? window.location.origin : ''}
+                <span>OAuth Redirect Target:</span>
+                <code className="text-[10px] font-mono bg-white dark:bg-black/30 px-1.5 py-0.5 rounded border border-[#ded8ce] dark:border-[#333] text-[#2c2a26] dark:text-[#e4e4e7] truncate max-w-[200px]">
+                  {redirectUrl}
                 </code>
               </div>
+              <div className="flex items-center gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => handleSaveRedirectUrl(PRODUCTION_SITE_URL)}
+                  className={`text-[10px] px-2 py-0.5 rounded border font-medium transition-colors ${
+                    redirectUrl === PRODUCTION_SITE_URL
+                      ? 'bg-[#ff6719] text-white border-[#ff6719]'
+                      : 'bg-white dark:bg-[#141416] text-[#6b665e] dark:text-[#a1a1aa] border-[#ded8ce] dark:border-[#333] hover:border-[#ff6719]'
+                  }`}
+                >
+                  Production (Vercel)
+                </button>
+                {typeof window !== 'undefined' && window.location.origin !== PRODUCTION_SITE_URL && (
+                  <button
+                    type="button"
+                    onClick={() => handleSaveRedirectUrl(window.location.origin)}
+                    className={`text-[10px] px-2 py-0.5 rounded border font-medium transition-colors ${
+                      redirectUrl === window.location.origin
+                        ? 'bg-[#ff6719] text-white border-[#ff6719]'
+                        : 'bg-white dark:bg-[#141416] text-[#6b665e] dark:text-[#a1a1aa] border-[#ded8ce] dark:border-[#333] hover:border-[#ff6719]'
+                    }`}
+                  >
+                    Current Dev Host
+                  </button>
+                )}
+              </div>
               <p className="text-[10px] text-[#8c8880] leading-tight">
-                Agar Google redirect kembali ke URL cloud (bukan localhost), pastikan URL di atas disalin ke <strong>Supabase Dashboard &gt; Authentication &gt; URL Configuration &gt; Site URL</strong>.
+                Make sure this exact redirect target is added in <strong>Supabase Dashboard &gt; Authentication &gt; URL Configuration &gt; Redirect URLs</strong>.
               </p>
             </div>
 
             {!isLiveConnected && (
               <div className="mt-2.5 pt-2.5 border-t border-[#ded8ce] dark:border-[#2a2a2e] space-y-2">
                 <p className="text-[11px] text-[#6b665e] dark:text-[#a1a1aa] leading-relaxed">
-                  Salin <strong>anon public key</strong> dari dashboard Supabase (<span className="font-mono text-[10px]">Project Settings -&gt; API</span>) untuk mengaktifkan login langsung:
+                  Copy your <strong>anon public key</strong> from the Supabase dashboard (<span className="font-mono text-[10px]">Project Settings -&gt; API</span>) to enable live authentication:
                 </p>
                 <div className="flex gap-1.5">
                   <div className="relative flex-1">
@@ -245,7 +280,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     onClick={handleSaveCustomKey}
                     className="px-3 py-1.5 bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] font-semibold text-[11px] rounded-md hover:opacity-90"
                   >
-                    Simpan
+                    Save
                   </button>
                 </div>
               </div>
@@ -292,7 +327,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 className="px-2.5 py-1 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md flex items-center gap-1 font-medium transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span>Keluar</span>
+                <span>Sign Out</span>
               </button>
             </div>
           )}
@@ -308,7 +343,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   : 'border-transparent text-[#7a766e] dark:text-[#a1a1aa] hover:text-[#1a1a1a]'
               }`}
             >
-              Masuk (Sign In)
+              Sign In
             </button>
             <button
               type="button"
@@ -319,7 +354,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   : 'border-transparent text-[#7a766e] dark:text-[#a1a1aa] hover:text-[#1a1a1a]'
               }`}
             >
-              Daftar Akun Baru
+              Create Account
             </button>
           </div>
 
@@ -327,14 +362,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             {mode === 'signup' && (
               <div>
                 <label className="block text-[11px] font-semibold text-[#403e39] dark:text-[#d4d4d8] mb-1">
-                  Nama Lengkap
+                  Full Name
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
                   <input
                     type="text"
                     required
-                    placeholder="Contoh: Mukhamad Azis Tholib"
+                    placeholder="e.g. Mukhamad Azis Tholib"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-[#141416] border border-[#d6d0c4] dark:border-[#333] rounded-lg text-[#1a1a1a] dark:text-white focus:outline-none focus:border-[#ff6719]"
@@ -345,14 +380,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             <div>
               <label className="block text-[11px] font-semibold text-[#403e39] dark:text-[#d4d4d8] mb-1">
-                Alamat Email
+                Email Address
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
                 <input
                   type="email"
                   required
-                  placeholder="anda@email.com"
+                  placeholder="you@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-[#141416] border border-[#d6d0c4] dark:border-[#333] rounded-lg text-[#1a1a1a] dark:text-white focus:outline-none focus:border-[#ff6719]"
@@ -362,7 +397,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
             <div>
               <label className="block text-[11px] font-semibold text-[#403e39] dark:text-[#d4d4d8] mb-1">
-                Kata Sandi (Password)
+                Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-stone-400 absolute left-3 top-2.5" />
@@ -370,7 +405,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   type="password"
                   required
                   minLength={6}
-                  placeholder="Minimal 6 karakter"
+                  placeholder="At least 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 text-xs bg-white dark:bg-[#141416] border border-[#d6d0c4] dark:border-[#333] rounded-lg text-[#1a1a1a] dark:text-white focus:outline-none focus:border-[#ff6719]"
@@ -383,7 +418,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               disabled={loading}
               className="w-full py-2.5 px-4 bg-[#ff6719] hover:bg-[#e85608] disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-sm flex items-center justify-center gap-1.5 transition-colors mt-2"
             >
-              <span>{loading ? 'Memproses...' : mode === 'signin' ? 'Masuk ke Libraria' : 'Daftar Sekarang'}</span>
+              <span>{loading ? 'Processing...' : mode === 'signin' ? 'Sign in to Libraria' : 'Register Now'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>
@@ -394,7 +429,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div className="w-full border-t border-[#e8e4db] dark:border-[#27272a]" />
             </div>
             <div className="relative flex justify-center text-[10px] uppercase font-bold text-[#8c8880] tracking-wider">
-              <span className="bg-[#fffdfa] dark:bg-[#18181b] px-2">Atau</span>
+              <span className="bg-[#fffdfa] dark:bg-[#18181b] px-2">Or</span>
             </div>
           </div>
 
@@ -423,7 +458,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span>Lanjutkan dengan Akun Google</span>
+            <span>Continue with Google</span>
           </button>
         </div>
       </div>

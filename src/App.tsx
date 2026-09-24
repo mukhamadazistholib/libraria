@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LibraryProvider, useLibrary } from './context/LibraryContext';
+import { LibraryProvider, useLibrary, SUPER_ADMIN_EMAIL } from './context/LibraryContext';
 import { Header } from './components/Header';
 import { SocialFeed } from './components/Feed/SocialFeed';
 import { LibraryView } from './components/Library/LibraryView';
@@ -86,20 +86,20 @@ const MainLayout: React.FC = () => {
                 <ShieldAlert className="w-7 h-7" />
               </div>
               <h2 className="font-editorial text-2xl sm:text-3xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">
-                Hak Akses Administrator Terbatas
+                Administrator Access Restricted
               </h2>
               <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] leading-relaxed max-w-md mx-auto">
-                Panel pengelolaan sistem, pengunggahan naskah digital, dan penambahan buku baru secara manual dibatasi secara khusus hanya untuk pemilik perpustakaan dengan email resmi:
+                System administration, digital EPUB uploading, and catalog creation are strictly reserved for the verified library administrator:
               </p>
               <div className="inline-block px-3.5 py-1.5 bg-[#ff6719]/10 border border-[#ff6719]/30 rounded-lg text-[#ff6719] font-mono text-xs font-semibold">
-                mukhamadazistholib278@gmail.com
+                {SUPER_ADMIN_EMAIL}
               </div>
               <div className="pt-2">
                 <button
                   onClick={() => handleTabChange('library')}
                   className="px-5 py-2.5 bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity"
                 >
-                  Kembali Menjelajah Katalog
+                  Return to Library Catalog
                 </button>
               </div>
             </div>
@@ -135,17 +135,17 @@ const MainLayout: React.FC = () => {
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="font-editorial text-base font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Libraria</span>
-            <span>— Platform Peminjaman Buku Digital & Media Sosial Literasi</span>
+            <span>— Digital Library & Literary Social Network</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <span>Arsitektur Full-stack EPUB 3.0</span>
+            <span>Reflowable EPUB 3.0</span>
             <span>•</span>
-            <span>Prisma ORM & PostgreSQL</span>
+            <span>Supabase PostgreSQL Database</span>
             <span>•</span>
-            <span>Cloudflare R2 Bucket</span>
+            <span>Cloudflare Storage</span>
             <span>•</span>
-            <span>Vercel Cron & QStash</span>
+            <span>Automated Cron Sweep</span>
           </div>
         </div>
       </footer>

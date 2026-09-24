@@ -60,10 +60,10 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
               The Reader's Dispatch • Volume 24
             </span>
             <h1 className="font-editorial text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#1a1a1a] dark:text-[#f4f4f5] mt-1">
-              Catatan & Aktivitas Komunitas Pembaca
+              Reader Activity & Literary Feed
             </h1>
             <p className="text-xs sm:text-sm text-[#59554e] dark:text-[#a1a1aa] font-sans mt-2 max-w-2xl leading-relaxed">
-              Jelajahi buku yang sedang diselami pembaca lain, ulasan mendalam, serta peredaran lisensi buku digital terkini di perpustakaan.
+              Discover what community members are reading, in-depth reviews, and real-time digital loan activity.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                   : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white'
               }`}
             >
-              Semua Aktivitas
+              All Activity
             </button>
             <button
               onClick={() => setFilterMode('ulasan')}
@@ -87,7 +87,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                   : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white'
               }`}
             >
-              Ulasan & Esai
+              Reviews & Essays
             </button>
           </div>
         </div>
@@ -115,7 +115,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                         <div className="min-w-0 flex-1 w-full overflow-hidden">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#ff6719] text-white flex-shrink-0">
-                              Sedang Anda Baca
+                              Currently Reading
                             </span>
                             <span className="text-xs text-[#706c64] dark:text-[#a1a1aa] truncate">
                               Progress: {userActiveLoans[0].progressPercentage}%
@@ -124,7 +124,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                           <h3 className="font-editorial text-base sm:text-lg font-bold text-[#1a1a1a] dark:text-[#f4f4f5] mt-1 leading-snug truncate block max-w-full">
                             {activeBook.title}
                           </h3>
-                          <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] truncate block max-w-full">Oleh {activeBook.author}</p>
+                          <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] truncate block max-w-full">By {activeBook.author}</p>
                           <div className="w-full bg-[#fae3d4] dark:bg-[#3d271c] h-1.5 rounded-full mt-2 overflow-hidden">
                             <div 
                               className="bg-[#ff6719] h-full rounded-full transition-all duration-500" 
@@ -145,7 +145,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                   className="w-full sm:w-auto px-4 py-2 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-semibold rounded-lg shadow-xs transition-all whitespace-nowrap flex items-center justify-center gap-1.5 self-stretch sm:self-center flex-shrink-0"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Buka Google Play Books Reader</span>
+                  <span>Open EPUB Reader</span>
                 </button>
               </div>
             </div>
@@ -176,12 +176,12 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                           <span className="text-[11px] text-[#706c64] dark:text-[#a1a1aa] truncate">{activity.userHandle}</span>
                         </div>
                         <p className="text-[11px] text-[#8c8880] dark:text-[#71717a] mt-0.5 truncate">
-                          {activity.actionType === 'finished_reading' && 'Selesai menamatkan buku'}
-                          {activity.actionType === 'started_reading' && 'Mulai membaca bab pertama'}
-                          {activity.actionType === 'rated_book' && 'Memberikan ulasan & rating'}
-                          {activity.actionType === 'added_wishlist' && 'Menambahkan ke wishlist'}
-                          {activity.actionType === 'created_shelf' && 'Membuat rak kurasi buku baru'}
-                          {activity.actionType === 'admin_uploaded' && 'Pustakawan mengunggah buku baru'}
+                          {activity.actionType === 'finished_reading' && 'Finished reading'}
+                          {activity.actionType === 'started_reading' && 'Started reading first chapter'}
+                          {activity.actionType === 'rated_book' && 'Reviewed & rated'}
+                          {activity.actionType === 'added_wishlist' && 'Saved to wishlist'}
+                          {activity.actionType === 'created_shelf' && 'Curated a new bookshelf'}
+                          {activity.actionType === 'admin_uploaded' && 'Librarian added a new book'}
                           {' • '}{activity.timestamp}
                         </p>
                       </div>
@@ -227,7 +227,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                           <h4 className="font-editorial text-sm font-bold text-[#1a1a1a] dark:text-[#f4f4f5] group-hover:text-[#ff6719] transition-colors truncate block max-w-full">
                             {relatedBook.title}
                           </h4>
-                          <p className="text-[11px] text-[#6b6760] dark:text-[#a1a1aa] truncate block max-w-full">Oleh {relatedBook.author}</p>
+                          <p className="text-[11px] text-[#6b6760] dark:text-[#a1a1aa] truncate block max-w-full">By {relatedBook.author}</p>
                           <div className="flex items-center gap-2 mt-1 flex-wrap max-w-full overflow-hidden">
                             <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded truncate max-w-full ${
                               relatedBook.availableCopies > 0
@@ -235,8 +235,8 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                                 : 'bg-[#faeceb] dark:bg-[#2d1515] text-[#9c2b27] dark:text-[#f87171]'
                             }`}>
                               {relatedBook.availableCopies > 0 
-                                ? `Tersedia ${relatedBook.availableCopies} dari ${relatedBook.totalCopies} slot` 
-                                : 'Seluruh slot dipinjam'}
+                                ? `${relatedBook.availableCopies} of ${relatedBook.totalCopies} copies available` 
+                                : 'All copies on loan'}
                             </span>
                             <span className="text-[10px] text-[#8c8880] dark:text-[#71717a] flex items-center gap-0.5 flex-shrink-0">
                               <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -251,7 +251,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                           onClick={() => handleQuickBorrow(relatedBook)}
                           className="w-full sm:w-auto px-3.5 py-1.5 text-xs font-semibold bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] hover:bg-[#333] dark:hover:bg-[#e4e4e7] rounded-md transition-colors whitespace-nowrap text-center shadow-xs"
                         >
-                          Pinjam
+                          Borrow
                         </button>
                       </div>
                     </div>
@@ -274,7 +274,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                         }`}
                       >
                         <Heart className={`w-4 h-4 ${hasLiked ? 'fill-[#ff6719]' : ''}`} />
-                        <span>{activity.likes} Sukai</span>
+                        <span>{activity.likes} Likes</span>
                       </button>
 
                       <button 
@@ -284,7 +284,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                         className="flex items-center gap-1.5 hover:text-[#1a1a1a] dark:hover:text-white transition-colors"
                       >
                         <MessageSquare className="w-4 h-4" />
-                        <span>Komentar</span>
+                        <span>Comment</span>
                       </button>
                     </div>
 
@@ -295,12 +295,12 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                         setTimeout(() => setCopiedPostId(null), 2500);
                       }}
                       className="flex items-center gap-1 p-1 hover:text-[#1a1a1a] dark:hover:text-white transition-colors text-xs"
-                      title="Bagikan catatan"
+                      title="Share post"
                     >
                       <Share2 className="w-4 h-4" />
                       {copiedPostId === activity.id && (
                         <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold animate-fade-in">
-                          Disalin!
+                          Copied!
                         </span>
                       )}
                     </button>
@@ -325,13 +325,13 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                 </h3>
               </div>
               <span className="text-xs font-bold text-[#ff6719] bg-[#fff0e6] dark:bg-[#ff6719]/15 px-2 py-0.5 rounded-full">
-                {currentUser.streakDays} Hari!
+                {currentUser.streakDays} Days!
               </span>
             </div>
 
             <div className="py-3 sm:py-4">
               <div className="flex items-center justify-between text-xs mb-1.5">
-                <span className="text-[#59554e] dark:text-[#a1a1aa] font-medium">Target 2026: 24 Buku</span>
+                <span className="text-[#59554e] dark:text-[#a1a1aa] font-medium">2026 Goal: 24 Books</span>
                 <span className="font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">{currentUser.booksFinished} / 24</span>
               </div>
               <div className="w-full bg-[#f0ede6] dark:bg-[#28282d] h-2 rounded-full overflow-hidden">
@@ -341,17 +341,17 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                 />
               </div>
               <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa] mt-2 italic">
-                "Sedikit demi sedikit, lama-lama menjadi perpustakaan pribadi di dalam benak."
+                "A room without books is like a body without a soul."
               </p>
             </div>
 
             <div className="pt-3 border-t border-[#f4f2ee] dark:border-[#27272a] flex items-center justify-between text-xs">
-              <span className="text-[#706c64] dark:text-[#a1a1aa]">{currentUser.pagesRead.toLocaleString('id-ID')} halaman</span>
+              <span className="text-[#706c64] dark:text-[#a1a1aa]">{currentUser.pagesRead.toLocaleString('en-US')} pages read</span>
               <button 
                 onClick={() => onNavigateTab('profile')}
                 className="text-[#ff6719] font-medium hover:underline text-xs"
               >
-                Lihat Lencana →
+                View Badges →
               </button>
             </div>
           </div>
@@ -362,10 +362,10 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-[#ff6719]" />
                 <h3 className="font-semibold text-xs uppercase tracking-wider text-[#1a1a1a] dark:text-[#f4f4f5]">
-                  Buku Populer
+                  Trending Books
                 </h3>
               </div>
-              <span className="text-[11px] text-[#8c8880] dark:text-[#71717a]">Pilihan Komunitas</span>
+              <span className="text-[11px] text-[#8c8880] dark:text-[#71717a]">Community Favorites</span>
             </div>
 
             <div className="divide-y divide-[#f4f2ee] dark:divide-[#27272a] mt-2">
@@ -390,7 +390,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
                     <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa] truncate">{book.author}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="text-[10px] text-[#ff6719] font-medium">
-                        {book.borrowCount}x dipinjam
+                        {book.borrowCount} loans
                       </span>
                       <span className="text-[10px] text-[#8c8880] dark:text-[#71717a]">
                         ⭐ {book.rating}
@@ -405,7 +405,7 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
               onClick={() => onNavigateTab('library')}
               className="w-full mt-2 pt-3 border-t border-[#f4f2ee] dark:border-[#27272a] text-center text-xs font-semibold text-[#ff6719] hover:text-[#e85608] flex items-center justify-center gap-1"
             >
-              <span>Jelajahi Seluruh Koleksi</span>
+              <span>Browse Full Collection</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -413,30 +413,30 @@ export const SocialFeed: React.FC<SocialFeedProps> = ({ onSelectBook, onOpenRead
           {/* Substack Newsletter-Style Quote Widget */}
           <div className="bg-[#faf7f0] dark:bg-[#1f1e1a] border border-[#e6dfd1] dark:border-[#383328] rounded-xl p-4 sm:p-5 shadow-xs">
             <span className="text-[10px] uppercase font-bold tracking-widest text-[#8c8577] dark:text-[#a89f8f]">
-              Kutipan Pembaca Hari Ini
+              Reader Quote of the Day
             </span>
             <blockquote className="font-editorial text-sm sm:text-base text-[#2e2c28] dark:text-[#e4ded0] italic mt-2 leading-relaxed">
-              "Buku adalah pembawa peradaban. Tanpa buku, sejarah diam, sastra bisu, sains lumpuh, dan pikiran terbelenggu."
+              "Books are the carriers of civilization. Without books, history is silent, literature dumb, science crippled, thought and speculation at a standstill."
             </blockquote>
             <p className="text-xs text-[#706a5f] dark:text-[#9e9587] mt-2 font-medium">
-              — Barbara Tuchman, Sejarawan
+              — Barbara Tuchman, Historian
             </p>
           </div>
 
           {/* Community Book Request Callout */}
           <div className="bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#e8e4dc] dark:border-[#27272a] p-4 sm:p-5 shadow-xs">
             <h3 className="font-semibold text-xs uppercase tracking-wider text-[#1a1a1a] dark:text-[#f4f4f5] mb-1.5">
-              Buku Impian Belum Ada?
+              Can't Find a Specific Title?
             </h3>
             <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] leading-relaxed">
-              Ajukan judul buku yang ingin Anda pinjam dalam format EPUB. Upvote terbanyak diprioritaskan pustakawan.
+              Submit a book request for digital EPUB licensing. Upvoted proposals are prioritized by the librarian.
             </p>
             <button
               onClick={() => onNavigateTab('requests')}
               className="mt-3 w-full py-2 bg-[#f4f1ea] dark:bg-[#202024] hover:bg-[#eae6dc] dark:hover:bg-[#28282e] text-[#1a1a1a] dark:text-[#f4f4f5] text-xs font-semibold rounded-lg transition-colors border border-[#ded8cc] dark:border-[#333] flex items-center justify-center gap-1.5"
             >
               <Plus className="w-3.5 h-3.5 text-[#ff6719]" />
-              <span>Usulkan Judul Buku</span>
+              <span>Request a Title</span>
             </button>
           </div>
         </div>

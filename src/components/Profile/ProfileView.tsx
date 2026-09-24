@@ -89,14 +89,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                 </h1>
                 <span className="text-xs text-[#8c8880] dark:text-[#71717a]">{currentUser.handle}</span>
                 <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-[#fff0e6] dark:bg-[#ff6719]/15 text-[#ff6719] border border-[#ffd8c2] dark:border-[#ff6719]/30">
-                  Pembaca Terverifikasi
+                  Verified Reader
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-[#59554e] dark:text-[#a1a1aa] max-w-xl font-sans leading-relaxed">
                 {currentUser.bio}
               </p>
               <p className="text-[11px] text-[#8c8880] dark:text-[#71717a] pt-0.5">
-                Bergabung sejak {currentUser.joinedDate}
+                Member since {currentUser.joinedDate}
               </p>
             </div>
           </div>
@@ -107,10 +107,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               <button
                 onClick={onOpenAuth}
                 className="px-3.5 py-2 rounded-lg bg-[#ff6719]/10 hover:bg-[#ff6719]/20 text-xs font-semibold text-[#ff6719] border border-[#ff6719]/30 transition-colors flex items-center gap-1.5"
-                title="Kelola Akun Supabase Auth"
+                title="Manage Supabase Auth Account"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Akun Supabase</span>
+                <span>Supabase Account</span>
               </button>
             )}
 
@@ -119,7 +119,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               className="px-3.5 py-2 rounded-lg border border-[#ded8cb] dark:border-[#333] hover:bg-[#f7f4ed] dark:hover:bg-[#202024] text-xs font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] transition-colors flex items-center gap-1.5"
             >
               <Edit3 className="w-3.5 h-3.5 text-[#8c8880] dark:text-[#a1a1aa]" />
-              <span>Edit Profil</span>
+              <span>Edit Profile</span>
             </button>
 
             <button
@@ -131,7 +131,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               }`}
             >
               <UserCheck className="w-3.5 h-3.5" />
-              <span>{isFollowingActiveUser ? 'Mengikuti' : 'Ikuti'}</span>
+              <span>{isFollowingActiveUser ? 'Following' : 'Follow'}</span>
             </button>
           </div>
         </div>
@@ -140,38 +140,38 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
         <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-[#f4f2ee] dark:border-[#27272a] grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
           <div className="p-3 bg-[#faf8f5] dark:bg-[#202024] rounded-xl border border-[#eeebe3] dark:border-[#2e2e33]">
             <span className="text-[10px] uppercase font-bold text-[#8c8880] dark:text-[#a1a1aa] tracking-wider block">
-              Streak Membaca
+              Reading Streak
             </span>
             <div className="font-editorial text-xl sm:text-2xl font-bold text-[#ff6719] mt-0.5 flex items-center justify-center gap-1">
               <Flame className="w-5 h-5 fill-[#ff6719]" />
-              <span>{currentUser.streakDays} Hari</span>
+              <span>{currentUser.streakDays} Days</span>
             </div>
           </div>
 
           <div className="p-3 bg-[#faf8f5] dark:bg-[#202024] rounded-xl border border-[#eeebe3] dark:border-[#2e2e33]">
             <span className="text-[10px] uppercase font-bold text-[#8c8880] dark:text-[#a1a1aa] tracking-wider block">
-              Buku Ditamatkan
+              Books Finished
             </span>
             <span className="font-editorial text-xl sm:text-2xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5 block">
-              {currentUser.booksFinished} Judul
+              {currentUser.booksFinished} Books
             </span>
           </div>
 
           <div className="p-3 bg-[#faf8f5] dark:bg-[#202024] rounded-xl border border-[#eeebe3] dark:border-[#2e2e33]">
             <span className="text-[10px] uppercase font-bold text-[#8c8880] dark:text-[#a1a1aa] tracking-wider block">
-              Halaman Dibaca
+              Pages Read
             </span>
             <span className="font-editorial text-xl sm:text-2xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5 block">
-              {currentUser.pagesRead.toLocaleString('id-ID')}
+              {currentUser.pagesRead.toLocaleString('en-US')}
             </span>
           </div>
 
           <div className="p-3 bg-[#faf8f5] dark:bg-[#202024] rounded-xl border border-[#eeebe3] dark:border-[#2e2e33]">
             <span className="text-[10px] uppercase font-bold text-[#8c8880] dark:text-[#a1a1aa] tracking-wider block">
-              Komunitas
+              Community
             </span>
             <span className="font-editorial text-xl sm:text-2xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5 block">
-              {currentUser.followersCount} Pengikut
+              {currentUser.followersCount} Followers
             </span>
           </div>
         </div>
@@ -187,7 +187,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
           }`}
         >
-          Rak & Koleksi Buku
+          Shelves & Collections
         </button>
         <button
           onClick={() => setActiveTab('ulasan')}
@@ -197,7 +197,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
           }`}
         >
-          Ulasan Saya ({userReviews.length})
+          My Reviews ({userReviews.length})
         </button>
         <button
           onClick={() => setActiveTab('kutipan')}
@@ -207,7 +207,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
           }`}
         >
-          Kutipan ({userHighlights.length})
+          Highlights ({userHighlights.length})
         </button>
         <button
           onClick={() => setActiveTab('lencana')}
@@ -217,7 +217,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
           }`}
         >
-          Lencana & Capaian
+          Badges & Achievements
         </button>
       </div>
 
@@ -235,7 +235,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                     : 'bg-white dark:bg-[#1a1a1e] text-[#59554e] dark:text-[#a1a1aa] border-[#ded8cb] dark:border-[#27272a] hover:bg-[#faf7f2] dark:hover:bg-[#202024]'
                 }`}
               >
-                Sedang Dipinjam ({activeLoans.length})
+                Active Loans ({activeLoans.length})
               </button>
 
               <button
@@ -269,7 +269,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               className="self-start sm:self-auto px-3 py-1.5 bg-[#f4f1ea] dark:bg-[#202024] hover:bg-[#eae6dc] dark:hover:bg-[#28282e] text-[#1a1a1a] dark:text-[#f4f4f5] text-xs font-semibold rounded-lg border border-[#ded8cc] dark:border-[#333] flex items-center gap-1.5 transition-colors whitespace-nowrap"
             >
               <FolderPlus className="w-3.5 h-3.5 text-[#ff6719]" />
-              <span>Buat Rak Kustom</span>
+              <span>Create Custom Shelf</span>
             </button>
           </div>
 
@@ -298,7 +298,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                           }}
                           className="px-2.5 py-1 bg-[#ff6719] text-white rounded text-[11px]"
                         >
-                          Baca
+                          Read
                         </button>
                       </div>
                     </div>
@@ -310,7 +310,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
             {activeShelfId === 'wishlist' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                 {wishlistBooks.length === 0 ? (
-                  <p className="col-span-full text-center text-xs text-[#8c8880] dark:text-[#71717a] py-12">Belum ada buku di wishlist.</p>
+                  <p className="col-span-full text-center text-xs text-[#8c8880] dark:text-[#71717a] py-12">No books in your wishlist yet.</p>
                 ) : (
                   wishlistBooks.map(book => (
                     <div 
@@ -330,7 +330,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                           }}
                           className="text-xs text-red-500 hover:underline"
                         >
-                          Hapus
+                          Remove
                         </button>
                       </div>
                     </div>
@@ -351,18 +351,18 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                     <div className="space-y-4">
                       <div className="p-4 bg-[#faf8f5] dark:bg-[#202024] rounded-xl border border-[#eeebe3] dark:border-[#27272a]">
                         <h3 className="font-editorial text-lg font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">{shelf.name}</h3>
-                        <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-1">{shelf.description || 'Rak kurasi buku pribadi pembaca.'}</p>
+                        <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-1">{shelf.description || 'Curated private bookshelf.'}</p>
                       </div>
 
                       {shelfBooks.length === 0 ? (
                         <p className="text-center text-xs text-[#8c8880] dark:text-[#71717a] py-8">
-                          Rak ini masih kosong. Buka detail buku di katalog dan klik ikon folder untuk menambahkan.
+                          This shelf is empty. Browse the catalog and click the folder icon on any book to add it.
                         </p>
                       ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                           {shelfBooks.map(book => (
                             <div 
-                              key={book.id}
+                              key={book.id} 
                               onClick={() => onSelectBook(book)}
                               className="bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#e8e4dc] dark:border-[#27272a] p-4 cursor-pointer hover:shadow-md transition-all group"
                             >
@@ -386,7 +386,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
       {activeTab === 'ulasan' && (
         <div className="space-y-4">
           {userReviews.length === 0 ? (
-            <p className="text-center text-xs text-[#8c8880] dark:text-[#71717a] py-12">Belum ada ulasan yang Anda tulis.</p>
+            <p className="text-center text-xs text-[#8c8880] dark:text-[#71717a] py-12">You haven't written any reviews yet.</p>
           ) : (
             userReviews.map(rev => (
               <div key={rev.id} className="p-4 sm:p-5 bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#e8e4dc] dark:border-[#27272a] space-y-2">
@@ -401,10 +401,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                   "{rev.comment}"
                 </blockquote>
                 <div className="flex items-center justify-between text-[11px] text-[#8c8880] dark:text-[#71717a] pt-2">
-                  <span>Ditulis {rev.createdAt}</span>
+                  <span>Written on {rev.createdAt}</span>
                   <span className="flex items-center gap-1">
                     <Heart className="w-3.5 h-3.5 text-[#ff6719] fill-current" />
-                    {rev.likes} Suka dari pembaca lain
+                    {rev.likes} likes from readers
                   </span>
                 </div>
               </div>
@@ -418,7 +418,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
         <div className="space-y-4">
           {userHighlights.length === 0 ? (
             <p className="text-center text-xs text-[#8c8880] dark:text-[#71717a] py-12">
-              Belum ada kutipan tersimpan. Buka EPUB Reader dan klik ikon stabilo untuk mencatat kutipan berharga.
+              No saved highlights yet. Open the EPUB Reader and use the highlighter to save memorable passages.
             </p>
           ) : (
             userHighlights.map(hl => (
@@ -432,7 +432,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                 </blockquote>
                 {hl.note && (
                   <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] bg-[#faf8f5] dark:bg-[#202024] p-2.5 rounded-lg border border-[#eeebe3] dark:border-[#27272a]">
-                    <strong>Catatan:</strong> {hl.note}
+                    <strong>Note:</strong> {hl.note}
                   </p>
                 )}
               </div>
@@ -448,10 +448,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
             <div className="w-12 h-12 mx-auto rounded-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-200 dark:border-amber-800">
               <Award className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Kutu Buku 2026</h4>
-            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Telah membaca lebih dari 15 judul buku digital.</p>
+            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Bookworm 2026</h4>
+            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Read more than 15 digital books.</p>
             <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full inline-block">
-              Tercapai ✓
+              Unlocked ✓
             </span>
           </div>
 
@@ -459,10 +459,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
             <div className="w-12 h-12 mx-auto rounded-full bg-orange-50 dark:bg-orange-950/40 text-[#ff6719] flex items-center justify-center border border-orange-200 dark:border-orange-900">
               <Flame className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Streak 14 Hari</h4>
-            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Membaca berturut-turut tanpa jeda selama dua minggu.</p>
+            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">14-Day Streak</h4>
+            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Read every day for two consecutive weeks.</p>
             <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full inline-block">
-              Tercapai ✓
+              Unlocked ✓
             </span>
           </div>
 
@@ -470,10 +470,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
             <div className="w-12 h-12 mx-auto rounded-full bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center border border-indigo-200 dark:border-indigo-900">
               <Sparkles className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Kritikus Ulung</h4>
-            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Menulis ulasan berbobot yang disukai komunitas pembaca.</p>
+            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Prolific Critic</h4>
+            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Authored insightful reviews appreciated by fellow readers.</p>
             <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full inline-block">
-              Tercapai ✓
+              Unlocked ✓
             </span>
           </div>
 
@@ -481,10 +481,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
             <div className="w-12 h-12 mx-auto rounded-full bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 flex items-center justify-center border border-stone-200 dark:border-stone-700">
               <BookOpen className="w-6 h-6" />
             </div>
-            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Maraton 50 Buku</h4>
-            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Target besar menyelesaikan 50 buku di Libraria.</p>
+            <h4 className="font-bold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">50-Book Marathon</h4>
+            <p className="text-[11px] text-[#706c64] dark:text-[#a1a1aa]">Ambitious milestone of completing 50 books in Libraria.</p>
             <span className="text-[10px] font-bold text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 px-2 py-0.5 rounded-full inline-block">
-              18/50 Buku
+              18/50 Books
             </span>
           </div>
         </div>
@@ -494,9 +494,9 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
       {isEditingBio && (
         <div className="fixed inset-0 z-60 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
           <form onSubmit={handleSaveProfile} className="bg-white dark:bg-[#1a1a1e] max-w-md w-full rounded-2xl p-6 border border-[#ded8cb] dark:border-[#27272a] shadow-2xl space-y-4 text-xs">
-            <h3 className="font-editorial text-base font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Edit Profil Pembaca</h3>
+            <h3 className="font-editorial text-base font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Edit Reader Profile</h3>
             <div>
-              <label className="font-semibold text-stone-600 dark:text-stone-300">Nama Tampilan</label>
+              <label className="font-semibold text-stone-600 dark:text-stone-300">Display Name</label>
               <input
                 type="text"
                 value={editName}
@@ -506,7 +506,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
               />
             </div>
             <div>
-              <label className="font-semibold text-stone-600 dark:text-stone-300">Bio Singkat</label>
+              <label className="font-semibold text-stone-600 dark:text-stone-300">Short Bio</label>
               <textarea
                 value={editBio}
                 onChange={(e) => setEditBio(e.target.value)}
@@ -520,13 +520,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                 onClick={() => setIsEditingBio(false)}
                 className="px-3 py-1.5 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-[#25252a] rounded-md"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
                 className="px-4 py-1.5 bg-[#ff6719] hover:bg-[#e85608] text-white font-semibold rounded-md shadow-xs"
               >
-                Simpan
+                Save Changes
               </button>
             </div>
           </form>
@@ -537,24 +537,24 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
       {showNewShelfModal && (
         <div className="fixed inset-0 z-60 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
           <form onSubmit={handleCreateShelf} className="bg-white dark:bg-[#1a1a1e] max-w-md w-full rounded-2xl p-6 border border-[#ded8cb] dark:border-[#27272a] shadow-2xl space-y-4 text-xs">
-            <h3 className="font-editorial text-base font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Buat Rak Kustom Baru</h3>
+            <h3 className="font-editorial text-base font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Create New Custom Shelf</h3>
             <div>
-              <label className="font-semibold text-stone-600 dark:text-stone-300">Nama Rak</label>
+              <label className="font-semibold text-stone-600 dark:text-stone-300">Shelf Name</label>
               <input
                 type="text"
                 value={newShelfName}
                 onChange={(e) => setNewShelfName(e.target.value)}
-                placeholder="Contoh: Bacaan Filsafat 2026, Fiksi Akhir Pekan..."
+                placeholder="e.g. Philosophy 2026, Weekend Fiction..."
                 className="w-full mt-1 p-2.5 bg-stone-50 dark:bg-[#141416] border border-stone-200 dark:border-[#27272a] rounded-lg text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
                 required
               />
             </div>
             <div>
-              <label className="font-semibold text-stone-600 dark:text-stone-300">Deskripsi Rak (Opsional)</label>
+              <label className="font-semibold text-stone-600 dark:text-stone-300">Shelf Description (Optional)</label>
               <textarea
                 value={newShelfDesc}
                 onChange={(e) => setNewShelfDesc(e.target.value)}
-                placeholder="Tujuan kurasi koleksi ini..."
+                placeholder="Theme or reading intention for this shelf..."
                 rows={2}
                 className="w-full mt-1 p-2.5 bg-stone-50 dark:bg-[#141416] border border-stone-200 dark:border-[#27272a] rounded-lg text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
               />
@@ -565,14 +565,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ onSelectBook, onOpenRe
                 onClick={() => setShowNewShelfModal(false)}
                 className="px-3 py-1.5 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-[#25252a] rounded-md"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={!newShelfName.trim()}
                 className="px-4 py-1.5 bg-[#ff6719] hover:bg-[#e85608] disabled:opacity-50 text-white font-semibold rounded-md shadow-xs"
               >
-                Buat Rak
+                Create Shelf
               </button>
             </div>
           </form>

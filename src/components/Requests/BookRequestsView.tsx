@@ -53,28 +53,28 @@ export const BookRequestsView: React.FC = () => {
         return (
           <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-[#eef8ee] dark:bg-[#142616] text-[#1b5e20] dark:text-[#4ade80] border border-[#c4e8c4] dark:border-[#25572b] flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" />
-            <span>Disetujui</span>
+            <span>Approved</span>
           </span>
         );
       case 'ditinjau':
         return (
           <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-[#fff8e6] dark:bg-[#261e0e] text-[#b37400] dark:text-amber-400 border border-[#fbe4a8] dark:border-[#4d3810] flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            <span>Ditinjau</span>
+            <span>In Review</span>
           </span>
         );
       case 'ditolak':
         return (
           <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-[#fdf0f0] dark:bg-[#2e1515] text-[#b71c1c] dark:text-[#f87171] border border-[#f8c8c8] dark:border-[#522020] flex items-center gap-1">
             <XCircle className="w-3 h-3" />
-            <span>Ditolak</span>
+            <span>Declined</span>
           </span>
         );
       default:
         return (
           <span className="px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold bg-[#f4f1ea] dark:bg-[#202024] text-[#6b6760] dark:text-[#a1a1aa] border border-[#ded8cb] dark:border-[#333] flex items-center gap-1">
             <HelpCircle className="w-3 h-3" />
-            <span>Diajukan</span>
+            <span>Submitted</span>
           </span>
         );
     }
@@ -87,13 +87,13 @@ export const BookRequestsView: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest font-semibold text-[#ff6719]">
-              Suara Komunitas Pembaca
+              Community Voices
             </span>
             <h1 className="font-editorial text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#1a1a1a] dark:text-[#f4f4f5] mt-1">
-              Usulan & Permintaan Buku Baru
+              Book Proposals & Acquisitions
             </h1>
             <p className="text-xs sm:text-sm text-[#59554e] dark:text-[#a1a1aa] font-sans mt-2 max-w-2xl leading-relaxed">
-              Dukung usulan buku dari sesama pembaca melalui upvote. Judul dengan dukungan terbanyak akan diprioritaskan untuk pengadaan lisensi digital EPUB oleh pustakawan admin.
+              Upvote book proposals from fellow readers. Titles with high community interest are prioritized for digital EPUB licensing by the library administrator.
             </p>
           </div>
 
@@ -102,7 +102,7 @@ export const BookRequestsView: React.FC = () => {
             className="px-4 py-2.5 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-semibold rounded-lg shadow-xs transition-colors flex items-center gap-2 self-start md:self-auto whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
-            <span>Usulkan Buku Baru</span>
+            <span>Request a Title</span>
           </button>
         </div>
       </div>
@@ -115,25 +115,34 @@ export const BookRequestsView: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Cari judul, penulis, pengusul..."
+            placeholder="Search titles, authors, or contributors..."
             className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#1a1a1e] border border-[#ded8cb] dark:border-[#27272a] rounded-lg text-xs text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
           />
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto text-xs pb-1 sm:pb-0 scrollbar-none">
-          {(['all', 'diajukan', 'ditinjau', 'disetujui', 'ditolak'] as const).map(status => (
-            <button
-              key={status}
-              onClick={() => setStatusFilter(status)}
-              className={`px-3 py-1.5 rounded-full capitalize font-medium border transition-all whitespace-nowrap ${
-                statusFilter === status
-                  ? 'bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] border-[#1a1a1a] dark:border-white'
-                  : 'bg-white dark:bg-[#1a1a1e] text-[#59554e] dark:text-[#a1a1aa] border-[#ded8cb] dark:border-[#27272a] hover:bg-[#faf7f2] dark:hover:bg-[#202024]'
-              }`}
-            >
-              {status === 'all' ? 'Semua' : status}
-            </button>
-          ))}
+          {(['all', 'diajukan', 'ditinjau', 'disetujui', 'ditolak'] as const).map(status => {
+            const labelMap: Record<string, string> = {
+              all: 'All',
+              diajukan: 'Submitted',
+              ditinjau: 'In Review',
+              disetujui: 'Approved',
+              ditolak: 'Declined'
+            };
+            return (
+              <button
+                key={status}
+                onClick={() => setStatusFilter(status)}
+                className={`px-3 py-1.5 rounded-full capitalize font-medium border transition-all whitespace-nowrap ${
+                  statusFilter === status
+                    ? 'bg-[#1a1a1a] dark:bg-white text-white dark:text-[#1a1a1a] border-[#1a1a1a] dark:border-white'
+                    : 'bg-white dark:bg-[#1a1a1e] text-[#59554e] dark:text-[#a1a1aa] border-[#ded8cb] dark:border-[#27272a] hover:bg-[#faf7f2] dark:hover:bg-[#202024]'
+                }`}
+              >
+                {labelMap[status]}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -153,7 +162,7 @@ export const BookRequestsView: React.FC = () => {
                     <h3 className="font-editorial text-base sm:text-lg font-bold text-[#1a1a1a] dark:text-[#f4f4f5] leading-tight truncate block max-w-full">
                       {req.title}
                     </h3>
-                    <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-0.5 truncate block max-w-full">Penulis: <strong>{req.author}</strong></p>
+                    <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-0.5 truncate block max-w-full">Author: <strong>{req.author}</strong></p>
                   </div>
                   <div className="flex-shrink-0">
                     {getStatusBadge(req.status)}
@@ -166,7 +175,7 @@ export const BookRequestsView: React.FC = () => {
 
                 {req.adminNote && (
                   <div className="p-3 bg-[#f0f7ff] dark:bg-[#111f33] rounded-lg border border-[#d0e5ff] dark:border-[#1d3d66] text-[11px] text-[#004085] dark:text-[#93c5fd] break-words">
-                    <strong>Catatan Pustakawan:</strong> {req.adminNote}
+                    <strong>Librarian Note:</strong> {req.adminNote}
                   </div>
                 )}
               </div>
@@ -179,7 +188,7 @@ export const BookRequestsView: React.FC = () => {
                     alt={req.userName}
                     className="w-5 h-5 rounded-full object-cover aspect-square flex-shrink-0"
                   />
-                  <span className="text-[#8c8880] dark:text-[#a1a1aa] text-[11px] truncate">Oleh <strong>{req.userName}</strong></span>
+                  <span className="text-[#8c8880] dark:text-[#a1a1aa] text-[11px] truncate">By <strong>{req.userName}</strong></span>
                 </div>
 
                 <button
@@ -189,10 +198,10 @@ export const BookRequestsView: React.FC = () => {
                       ? 'bg-[#ff6719] text-white border-[#ff6719] shadow-xs'
                       : 'bg-white dark:bg-[#202024] hover:bg-[#faf8f5] dark:hover:bg-[#28282e] text-[#59554e] dark:text-[#a1a1aa] border-[#ded8cb] dark:border-[#333]'
                   }`}
-                  title="Dukung buku ini"
+                  title="Upvote this request"
                 >
                   <ThumbsUp className={`w-3.5 h-3.5 ${hasUpvoted ? 'fill-current' : ''}`} />
-                  <span>{req.upvotes} Dukungan</span>
+                  <span>{req.upvotes} Upvotes</span>
                 </button>
               </div>
             </div>
@@ -206,43 +215,43 @@ export const BookRequestsView: React.FC = () => {
           <form onSubmit={handleSubmit} className="bg-white dark:bg-[#1a1a1e] max-w-lg w-full rounded-2xl p-6 border border-[#ded8cb] dark:border-[#27272a] shadow-2xl space-y-4 text-xs">
             <div className="border-b border-stone-200 dark:border-[#27272a] pb-3">
               <span className="text-[10px] uppercase tracking-wider font-bold text-[#ff6719]">
-                Formulir Usulan Koleksi
+                Book Proposal Form
               </span>
               <h3 className="font-editorial text-xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">
-                Usulkan Buku EPUB Baru
+                Propose a New EPUB Title
               </h3>
             </div>
 
             <div>
-              <label className="font-semibold text-stone-700 dark:text-stone-300">Judul Buku</label>
+              <label className="font-semibold text-stone-700 dark:text-stone-300">Book Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Contoh: Man's Search for Meaning"
+                placeholder="e.g. Man's Search for Meaning"
                 className="w-full mt-1 p-2.5 bg-stone-50 dark:bg-[#141416] border border-stone-200 dark:border-[#27272a] rounded-lg text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
                 required
               />
             </div>
 
             <div>
-              <label className="font-semibold text-stone-700 dark:text-stone-300">Nama Penulis</label>
+              <label className="font-semibold text-stone-700 dark:text-stone-300">Author Name</label>
               <input
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                placeholder="Contoh: Viktor E. Frankl"
+                placeholder="e.g. Viktor E. Frankl"
                 className="w-full mt-1 p-2.5 bg-stone-50 dark:bg-[#141416] border border-stone-200 dark:border-[#27272a] rounded-lg text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
                 required
               />
             </div>
 
             <div>
-              <label className="font-semibold text-stone-700 dark:text-stone-300">Alasan & Signifikansi</label>
+              <label className="font-semibold text-stone-700 dark:text-stone-300">Reason & Community Value</label>
               <textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder="Jelaskan signifikansi isi buku atau manfaatnya bagi pembaca lain di Libraria..."
+                placeholder="Explain why this book would be valuable to the Libraria community..."
                 rows={3}
                 className="w-full mt-1 p-2.5 bg-stone-50 dark:bg-[#141416] border border-stone-200 dark:border-[#27272a] rounded-lg text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
                 required
@@ -255,14 +264,14 @@ export const BookRequestsView: React.FC = () => {
                 onClick={() => setShowModal(false)}
                 className="px-3.5 py-2 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-[#25252a] rounded-lg"
               >
-                Batal
+                Cancel
               </button>
               <button
                 type="submit"
                 disabled={!title.trim() || !author.trim() || !reason.trim()}
                 className="px-4 py-2 bg-[#ff6719] hover:bg-[#e85608] disabled:opacity-50 text-white font-semibold rounded-lg shadow-xs"
               >
-                Kirim Usulan
+                Submit Proposal
               </button>
             </div>
           </form>

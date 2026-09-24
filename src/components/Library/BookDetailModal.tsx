@@ -100,7 +100,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                   {book.title}
                 </h2>
                 <p className="text-sm font-medium text-[#59554e] dark:text-[#a1a1aa] mt-1 font-sans">
-                  Karya <span className="text-[#1a1a1a] dark:text-white font-semibold">{book.author}</span> ({book.publishedYear})
+                  By <span className="text-[#1a1a1a] dark:text-white font-semibold">{book.author}</span> ({book.publishedYear})
                 </p>
               </div>
 
@@ -109,7 +109,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                 <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#fff8e6] dark:bg-[#261e0e] text-[#b37400] dark:text-amber-400 rounded-md text-xs font-bold border border-[#fae8b8] dark:border-[#4d3810]">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                   <span>{book.rating}</span>
-                  <span className="text-[#8c8880] dark:text-[#a1a1aa] font-normal">({book.ratingCount} ulasan)</span>
+                  <span className="text-[#8c8880] dark:text-[#a1a1aa] font-normal">({book.ratingCount} reviews)</span>
                 </div>
 
                 <div className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
@@ -118,12 +118,12 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-300 dark:border-stone-700'
                 }`}>
                   {isAvailable 
-                    ? `Tersedia: ${book.availableCopies} dari ${book.totalCopies} slot` 
-                    : 'Semua eksemplar sedang dipinjam'}
+                    ? `Available: ${book.availableCopies} of ${book.totalCopies} copies` 
+                    : 'All copies currently on loan'}
                 </div>
 
                 <div className="text-xs text-[#706c64] dark:text-[#a1a1aa]">
-                  Dipinjam {book.borrowCount} kali
+                  Borrowed {book.borrowCount} times
                 </div>
               </div>
 
@@ -149,7 +149,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     className="px-4 sm:px-5 py-2.5 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-bold rounded-lg shadow-xs transition-all flex items-center gap-2"
                   >
                     <BookOpen className="w-4 h-4" />
-                    <span>Lanjut Baca ({activeLoan.progressPercentage}%)</span>
+                    <span>Continue Reading ({activeLoan.progressPercentage}%)</span>
                   </button>
                 ) : isAvailable ? (
                   <button
@@ -157,14 +157,14 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     className="px-4 sm:px-5 py-2.5 bg-[#1a1a1a] dark:bg-white hover:bg-[#333333] dark:hover:bg-[#e4e4e7] text-white dark:text-[#1a1a1a] text-xs font-bold rounded-lg shadow-xs transition-all flex items-center gap-2"
                   >
                     <BookOpen className="w-4 h-4" />
-                    <span>Pinjam Buku ({systemSettings.borrowDurationDays} Hari)</span>
+                    <span>Borrow Book ({systemSettings.borrowDurationDays} Days)</span>
                   </button>
                 ) : (
                   <button
-                    onClick={() => setBorrowMsg({ text: `Anda telah terdaftar dalam daftar tunggu "${book.title}". Kami akan mengirimkan notifikasi saat ada eksemplar yang dikembalikan.`, error: false })}
+                    onClick={() => setBorrowMsg({ text: `You have joined the waitlist for "${book.title}". We'll notify you when a copy is returned.`, error: false })}
                     className="px-4 sm:px-5 py-2.5 bg-[#eae6df] dark:bg-[#27272a] hover:bg-[#ded9cf] text-[#4a4742] dark:text-[#d4d4d8] text-xs font-semibold rounded-lg transition-all"
                   >
-                    Antre / Notifikasi
+                    Join Waitlist
                   </button>
                 )}
 
@@ -176,7 +176,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                   }}
                   className="px-3.5 sm:px-4 py-2.5 bg-white dark:bg-[#202024] border border-[#ded8cb] dark:border-[#333] hover:bg-[#f7f4ed] dark:hover:bg-[#28282e] text-xs font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] rounded-lg transition-colors"
                 >
-                  Pratinjau EPUB
+                  Preview EPUB
                 </button>
 
                 {/* Wishlist toggle */}
@@ -187,7 +187,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                       ? 'border-[#ff6719] bg-[#fff0e6] dark:bg-[#ff6719]/15 text-[#ff6719]' 
                       : 'border-[#ded8cb] dark:border-[#333] hover:bg-[#f7f4ed] dark:hover:bg-[#202024] text-[#706c64] dark:text-[#a1a1aa]'
                   }`}
-                  title={isWishlisted ? 'Hapus dari Wishlist' : 'Simpan ke Wishlist'}
+                  title={isWishlisted ? 'Remove from Wishlist' : 'Save to Wishlist'}
                 >
                   <Bookmark className="w-4 h-4 fill-current" />
                 </button>
@@ -197,21 +197,21 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                   <button
                     onClick={() => setShowShelfPicker(!showShelfPicker)}
                     className="p-2.5 rounded-lg border border-[#ded8cb] dark:border-[#333] hover:bg-[#f7f4ed] dark:hover:bg-[#202024] text-[#706c64] dark:text-[#a1a1aa] transition-colors"
-                    title="Tambahkan ke Rak Kustom"
+                    title="Add to Bookshelf"
                   >
                     <FolderPlus className="w-4 h-4" />
                   </button>
 
                   {showShelfPicker && (
                     <div className="absolute left-0 mt-2 w-56 bg-white dark:bg-[#202024] rounded-lg shadow-xl border border-[#ded8cb] dark:border-[#333] p-2 z-30">
-                      <p className="text-[11px] font-bold text-[#8c8880] dark:text-[#a1a1aa] px-2 py-1 uppercase">Pilih Rak Buku</p>
+                      <p className="text-[11px] font-bold text-[#8c8880] dark:text-[#a1a1aa] px-2 py-1 uppercase">Select Bookshelf</p>
                       {customShelves.map(shelf => (
                         <button
                           key={shelf.id}
                           onClick={() => {
                             addBookToShelf(shelf.id, book.id);
                             setShowShelfPicker(false);
-                            setBorrowMsg({ text: `Buku "${book.title}" berhasil dimasukkan ke rak "${shelf.name}"!`, error: false });
+                            setBorrowMsg({ text: `Book "${book.title}" added to "${shelf.name}" shelf!`, error: false });
                             setTimeout(() => setBorrowMsg(null), 4000);
                           }}
                           className="w-full text-left px-2.5 py-1.5 rounded text-xs hover:bg-[#f7f4ed] dark:hover:bg-[#28282e] text-[#1a1a1a] dark:text-[#f4f4f5] flex items-center justify-between"
@@ -238,7 +238,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     : 'text-[#706c64] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white'
                 }`}
               >
-                Sinopsis
+                Synopsis
               </button>
               <button
                 onClick={() => setActiveTab('ulasan')}
@@ -248,7 +248,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     : 'text-[#706c64] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white'
                 }`}
               >
-                Ulasan Pembaca ({bookReviews.length})
+                Reader Reviews ({bookReviews.length})
               </button>
               <button
                 onClick={() => setActiveTab('spesifikasi')}
@@ -258,7 +258,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     : 'text-[#706c64] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white'
                 }`}
               >
-                Spesifikasi & Lisensi
+                Specifications & License
               </button>
             </div>
           </div>
@@ -273,7 +273,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
               {/* Sample Chapters Table of Contents */}
               <div className="mt-4 pt-4 border-t border-[#f4f2ee] dark:border-[#27272a]">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-[#8c8880] dark:text-[#a1a1aa] mb-2.5">
-                  Daftar Isi & Pratinjau Bab
+                  Table of Contents & Chapter Preview
                 </h4>
                 <div className="divide-y divide-[#f4f2ee] dark:divide-[#27272a] border border-[#ded8cb] dark:border-[#27272a] rounded-lg bg-white dark:bg-[#1f1f23] overflow-hidden">
                   {book.chapters.map((chap, idx) => (
@@ -291,7 +291,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                         </span>
                         <span className="font-medium text-[#1a1a1a] dark:text-[#f4f4f5]">{chap.title}</span>
                       </div>
-                      <span className="text-[11px] text-[#8c8880] dark:text-[#71717a]">{chap.readTimeMinutes} menit</span>
+                      <span className="text-[11px] text-[#8c8880] dark:text-[#71717a]">{chap.readTimeMinutes} min</span>
                     </div>
                   ))}
                 </div>
@@ -303,7 +303,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
             <div className="space-y-5 sm:space-y-6">
               {/* Form to submit review */}
               <form onSubmit={handleSubmitReview} className="p-4 bg-white dark:bg-[#1f1f23] rounded-xl border border-[#ded8cb] dark:border-[#27272a] space-y-3">
-                <h4 className="text-xs font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Tulis Ulasan Anda</h4>
+                <h4 className="text-xs font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Write a Review</h4>
                 
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-[#706c64] dark:text-[#a1a1aa]">Rating:</span>
@@ -326,7 +326,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                 <textarea
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Bagikan pandangan Anda tentang buku ini (apa yang Anda pelajari, bab favorit, gaya kepenulisan)..."
+                  placeholder="Share your thoughts on this book (takeaways, favorite chapters, writing style)..."
                   rows={3}
                   className="w-full p-3 text-xs bg-[#faf8f5] dark:bg-[#141416] border border-[#ded8cb] dark:border-[#27272a] rounded-lg text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
                 />
@@ -337,7 +337,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                     disabled={isSubmittingReview || !newComment.trim()}
                     className="px-4 py-2 bg-[#ff6719] hover:bg-[#e85608] disabled:opacity-50 text-white text-xs font-semibold rounded-lg transition-colors shadow-xs"
                   >
-                    Kirim Ulasan
+                    Post Review
                   </button>
                 </div>
               </form>
@@ -346,7 +346,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
               <div className="space-y-3 sm:space-y-4">
                 {bookReviews.length === 0 ? (
                   <p className="text-xs text-center text-[#8c8880] dark:text-[#71717a] py-6">
-                    Belum ada ulasan untuk buku ini. Jadilah yang pertama memberikan ulasan!
+                    No reviews yet. Be the first to share your reflections on this work!
                   </p>
                 ) : (
                   bookReviews.map(rev => {
@@ -384,7 +384,7 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
                             }`}
                           >
                             <Heart className={`w-3.5 h-3.5 ${hasLiked ? 'fill-current' : ''}`} />
-                            <span>{rev.likes} Suka</span>
+                            <span>{rev.likes} Likes</span>
                           </button>
                         </div>
                       </div>
@@ -399,19 +399,19 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
             <div className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3 bg-white dark:bg-[#1f1f23] rounded-lg border border-[#ded8cb] dark:border-[#27272a]">
-                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Format Berkas Digital</p>
-                  <p className="font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">EPUB 3.0 Reflowable Text</p>
+                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Digital Format</p>
+                  <p className="font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">EPUB 3.0 Reflowable Container</p>
                 </div>
                 <div className="p-3 bg-white dark:bg-[#1f1f23] rounded-lg border border-[#ded8cb] dark:border-[#27272a]">
-                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Bahasa Dokumen</p>
+                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Language</p>
                   <p className="font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">{book.language}</p>
                 </div>
                 <div className="p-3 bg-white dark:bg-[#1f1f23] rounded-lg border border-[#ded8cb] dark:border-[#27272a]">
-                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Jumlah Halaman Fisik</p>
-                  <p className="font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">{book.pages} halaman</p>
+                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Estimated Page Count</p>
+                  <p className="font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">{book.pages} pages</p>
                 </div>
                 <div className="p-3 bg-white dark:bg-[#1f1f23] rounded-lg border border-[#ded8cb] dark:border-[#27272a]">
-                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Tahun Penerbitan</p>
+                  <p className="text-[#8c8880] dark:text-[#a1a1aa]">Year of Publication</p>
                   <p className="font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] mt-0.5">{book.publishedYear}</p>
                 </div>
               </div>
@@ -420,9 +420,9 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
               <div className="p-4 bg-[#f8f6f0] dark:bg-[#1c1c20] border border-[#e4ded0] dark:border-[#27272a] rounded-xl flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <h4 className="font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Keamanan Aset Digital (Cloudflare R2 Presigned)</h4>
+                  <h4 className="font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Digital Rights & Content Protection</h4>
                   <p className="text-[#59554e] dark:text-[#a1a1aa] leading-relaxed text-[11px]">
-                    Berkas EPUB tersimpan secara privat di bucket Cloudflare R2 tanpa akses URL publik. Akses baca streaming hanya diizinkan melalui presigned token berdurasi terbatas (10 menit) yang divalidasi oleh endpoint sistem berdasarkan lisensi peminjaman aktif.
+                    EPUB files are stored securely with streaming access restricted to active borrower sessions. License quotas are strictly enforced to preserve literary copyright integrity.
                   </p>
                 </div>
               </div>
@@ -432,12 +432,12 @@ export const BookDetailModal: React.FC<BookDetailModalProps> = ({ book, onClose,
 
         {/* Modal Footer */}
         <div className="p-3.5 sm:px-6 bg-[#f7f4ed] dark:bg-[#141416] border-t border-[#eae6df] dark:border-[#27272a] flex items-center justify-between text-xs text-[#706c64] dark:text-[#a1a1aa]">
-          <span className="text-[11px]">Masa pinjam: {systemSettings.borrowDurationDays} hari (Auto-return).</span>
+          <span className="text-[11px]">Loan period: {systemSettings.borrowDurationDays} days with automatic return.</span>
           <button
             onClick={onClose}
             className="px-4 py-2 bg-white dark:bg-[#202024] border border-[#ded8cb] dark:border-[#333] hover:bg-[#eeebe3] dark:hover:bg-[#28282e] rounded-lg font-medium text-[#1a1a1a] dark:text-[#f4f4f5] transition-colors"
           >
-            Tutup
+            Close
           </button>
         </div>
       </div>

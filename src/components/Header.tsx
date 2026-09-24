@@ -53,14 +53,14 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             <div className="flex items-center gap-2 truncate">
               <span className="inline-block w-2 h-2 rounded-full bg-[#ff6719] animate-pulse flex-shrink-0"></span>
               <span className="truncate text-[11px] sm:text-xs">
-                <strong>Digital Library Substack Edition</strong> — Maksimal pinjam {systemSettings.maxBorrowPerUser} buku ({systemSettings.borrowDurationDays} hari masa pinjam).
+                <strong>Digital Library Substack Edition</strong> — Maximum {systemSettings.maxBorrowPerUser} active loans ({systemSettings.borrowDurationDays} days loan period).
               </span>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               {isSuperAdmin ? (
                 <>
-                  <span className="text-[#a09e99] hidden md:inline text-[11px]">Peran:</span>
+                  <span className="text-[#a09e99] hidden md:inline text-[11px]">Role:</span>
                   <button
                     onClick={() => switchRole(activeRole === 'reader' ? 'admin' : 'reader')}
                     className={`px-2 py-0.5 rounded text-[11px] font-semibold transition-all flex items-center gap-1.5 ${
@@ -68,26 +68,26 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                         ? 'bg-[#ff6719] text-white shadow-xs' 
                         : 'bg-[#2e2e2e] text-[#e0ded8] hover:bg-[#3e3e3e]'
                     }`}
-                    title="Beralih peran Pembaca / Administrator"
+                    title="Switch between Reader / Administrator mode"
                   >
                     {activeRole === 'admin' ? (
                       <>
                         <ShieldAlert className="w-3 h-3" />
-                        <span>Mode Admin</span>
+                        <span>Admin Mode</span>
                       </>
                     ) : (
                       <>
                         <UserCheck className="w-3 h-3" />
-                        <span>Mode Reader</span>
+                        <span>Reader Mode</span>
                       </>
                     )}
-                    <span className="text-[10px] opacity-70 underline hidden sm:inline ml-0.5">Ganti</span>
+                    <span className="text-[10px] opacity-70 underline hidden sm:inline ml-0.5">Switch</span>
                   </button>
                 </>
               ) : (
                 <div className="flex items-center gap-1.5 text-[11px] text-[#a09e99]">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#ff6719]"></span>
-                  <span>Anggota Perpustakaan</span>
+                  <span>Library Member</span>
                 </div>
               )}
             </div>
@@ -129,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             >
               <span className="flex items-center gap-2">
                 <Search className="w-3.5 h-3.5 text-[#8a857c]" />
-                <span className="truncate">Cari judul buku, penulis, atau topik...</span>
+                <span className="truncate">Search title, author, or keyword...</span>
               </span>
               <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] bg-white dark:bg-[#141416] border border-[#ded9cf] dark:border-[#333] rounded text-[#8a857c]">
                 ⌘K
@@ -143,8 +143,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             <button
               onClick={onOpenSearch}
               className="md:hidden w-8 h-8 flex items-center justify-center text-[#4a4742] dark:text-[#a1a1aa] hover:bg-[#f0ede6] dark:hover:bg-[#202024] rounded-full transition-colors flex-shrink-0 aspect-square"
-              title="Cari katalog buku"
-              aria-label="Cari buku"
+              title="Search book catalog"
+              aria-label="Search catalog"
             >
               <Search className="w-4 h-4" />
             </button>
@@ -153,7 +153,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             <button
               onClick={toggleTheme}
               className="w-8 h-8 sm:w-9 sm:h-9 text-[#4a4742] dark:text-[#f4f4f5] hover:bg-[#f0ede6] dark:hover:bg-[#202024] rounded-full transition-colors flex items-center justify-center flex-shrink-0 aspect-square"
-              title={theme === 'dark' ? 'Ganti ke Mode Terang (Light Mode)' : 'Ganti ke Mode Gelap (Dark Mode)'}
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? (
@@ -168,8 +168,8 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="relative w-8 h-8 sm:w-9 sm:h-9 text-[#4a4742] dark:text-[#d4d4d8] hover:bg-[#f0ede6] dark:hover:bg-[#202024] rounded-full transition-colors flex items-center justify-center flex-shrink-0 aspect-square"
-                title="Notifikasi"
-                aria-label="Notifikasi"
+                title="Notifications"
+                aria-label="Notifications"
               >
                 <Bell className="w-4 h-4" />
                 {unreadNotificationsCount > 0 && (
@@ -180,14 +180,14 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
               {showNotifications && (
                 <div className="fixed sm:absolute right-3 sm:right-0 top-16 sm:top-auto sm:mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-white dark:bg-[#1a1a1e] rounded-xl shadow-2xl border border-[#e2ded7] dark:border-[#27272a] py-2 z-50 animate-fade-in">
                   <div className="px-4 py-2 border-b border-[#eeebe5] dark:border-[#27272a] flex items-center justify-between">
-                    <span className="font-semibold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Notifikasi Perpustakaan</span>
+                    <span className="font-semibold text-xs text-[#1a1a1a] dark:text-[#f4f4f5]">Library Notifications</span>
                     <div className="flex items-center gap-2">
                       {unreadNotificationsCount > 0 && (
                         <button
                           onClick={clearAllNotifications}
                           className="text-[11px] text-[#ff6719] hover:underline"
                         >
-                          Tandai semua dibaca
+                          Mark all as read
                         </button>
                       )}
                       <button 
@@ -202,7 +202,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   <div className="max-h-80 overflow-y-auto divide-y divide-[#f4f2ee] dark:divide-[#27272a]">
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-xs text-[#8c8880] dark:text-[#71717a]">
-                        Belum ada notifikasi baru.
+                        No new notifications.
                       </div>
                     ) : (
                       notifications.map(notif => (
@@ -279,7 +279,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   : 'text-[#59554e] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f4f1ea] dark:hover:bg-[#202024]'
               }`}
             >
-              Beranda (Feed)
+              Feed
             </button>
             <button
               onClick={() => setActiveTab('library')}
@@ -289,7 +289,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   : 'text-[#59554e] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f4f1ea] dark:hover:bg-[#202024]'
               }`}
             >
-              Katalog & Library
+              Catalog & Library
             </button>
             <button
               onClick={() => setActiveTab('my-books')}
@@ -299,7 +299,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   : 'text-[#59554e] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f4f1ea] dark:hover:bg-[#202024]'
               }`}
             >
-              Buku Saya (Pinjaman)
+              My Books (Loans)
             </button>
             <button
               onClick={() => setActiveTab('requests')}
@@ -309,7 +309,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   : 'text-[#59554e] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f4f1ea] dark:hover:bg-[#202024]'
               }`}
             >
-              Request Buku Baru
+              Request Books
             </button>
             <button
               onClick={() => setActiveTab('profile')}
@@ -319,7 +319,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   : 'text-[#59554e] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f4f1ea] dark:hover:bg-[#202024]'
               }`}
             >
-              Profil Pembaca
+              Reader Profile
             </button>
 
             {/* Admin Studio Tab Button (Strictly restricted to mukhamadazistholib278@gmail.com) */}
@@ -334,7 +334,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
                   }`}
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5 text-[#ff6719]" />
-                  <span>Studio Admin</span>
+                  <span>Admin Studio</span>
                 </button>
               </div>
             )}
@@ -362,7 +362,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             }`}
           >
             <BookOpen className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-0.5">Katalog</span>
+            <span className="text-[10px] font-medium mt-0.5">Catalog</span>
           </button>
 
           <button
@@ -372,7 +372,7 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             }`}
           >
             <Bookmark className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-0.5">Buku Saya</span>
+            <span className="text-[10px] font-medium mt-0.5">My Books</span>
           </button>
 
           <button
@@ -382,18 +382,18 @@ export const Header: React.FC<HeaderProps> = ({ activeTab, setActiveTab, onOpenS
             }`}
           >
             <HelpCircle className="w-5 h-5" />
-            <span className="text-[10px] font-medium mt-0.5">Usulan</span>
+            <span className="text-[10px] font-medium mt-0.5">Requests</span>
           </button>
 
           <button
-            onClick={() => setActiveTab(activeRole === 'admin' ? 'admin' : 'profile')}
+            onClick={() => setActiveTab(isSuperAdmin && activeRole === 'admin' ? 'admin' : 'profile')}
             className={`flex flex-col items-center justify-center h-full transition-colors ${
               activeTab === 'profile' || activeTab === 'admin' ? 'text-[#ff6719]' : 'text-[#706c64] dark:text-[#a1a1aa]'
             }`}
           >
-            {activeRole === 'admin' ? <SlidersHorizontal className="w-5 h-5" /> : <User className="w-5 h-5" />}
+            {isSuperAdmin && activeRole === 'admin' ? <SlidersHorizontal className="w-5 h-5" /> : <User className="w-5 h-5" />}
             <span className="text-[10px] font-medium mt-0.5">
-              {activeRole === 'admin' ? 'Admin' : 'Profil'}
+              {isSuperAdmin && activeRole === 'admin' ? 'Admin' : 'Profile'}
             </span>
           </button>
         </div>

@@ -80,7 +80,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
     e.stopPropagation();
     setBorrowStatus({
       id: book.id,
-      message: `Anda telah didaftarkan dalam antrean notifikasi untuk "${book.title}". Notifikasi akan dikirim saat buku tersedia kembali.`,
+      message: `You have been added to the notification waitlist for "${book.title}". You will be alerted when a copy becomes available.`,
       success: true
     });
     setTimeout(() => setBorrowStatus(null), 5000);
@@ -93,20 +93,20 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest font-semibold text-[#ff6719]">
-              Katalog Digital Terbuka
+              Open Digital Catalog
             </span>
             <h1 className="font-editorial text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#1a1a1a] dark:text-[#f4f4f5] mt-1">
-              Jelajahi Koleksi Buku EPUB
+              Explore the EPUB Collection
             </h1>
             <p className="text-xs sm:text-sm text-[#59554e] dark:text-[#a1a1aa] font-sans mt-2 max-w-2xl leading-relaxed">
-              Koleksi sastra, filsafat, dan pengetahuan berlisensi digital. Dilengkapi pembatasan slot ketersediaan demi menjaga hak cipta & pengalaman membaca.
+              Curated literature, philosophy, and non-fiction available under digital lending licenses with reflowable EPUB reading.
             </p>
           </div>
 
           {/* View Toggle */}
           <div className="flex items-center gap-2 self-start md:self-auto">
             <span className="text-xs text-[#706c64] dark:text-[#a1a1aa] font-medium hidden sm:inline">
-              Menampilkan {filteredBooks.length} buku
+              Showing {filteredBooks.length} books
             </span>
             <div className="flex items-center p-1 bg-[#f0ede6] dark:bg-[#202024] rounded-lg border border-[#e2ddd3] dark:border-[#2e2e33]">
               <button
@@ -114,7 +114,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                 className={`p-1.5 rounded transition-all ${
                   viewMode === 'grid' ? 'bg-white dark:bg-[#141416] shadow-xs text-[#1a1a1a] dark:text-[#f4f4f5]' : 'text-[#706c64] dark:text-[#a1a1aa]'
                 }`}
-                title="Tampilan Kisi (Grid)"
+                title="Grid View"
               >
                 <Grid className="w-4 h-4" />
               </button>
@@ -123,7 +123,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                 className={`p-1.5 rounded transition-all ${
                   viewMode === 'list' ? 'bg-white dark:bg-[#141416] shadow-xs text-[#1a1a1a] dark:text-[#f4f4f5]' : 'text-[#706c64] dark:text-[#a1a1aa]'
                 }`}
-                title="Tampilan Daftar (List)"
+                title="List View"
               >
                 <List className="w-4 h-4" />
               </button>
@@ -142,7 +142,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari berdasarkan judul, nama penulis, ISBN, atau topik..."
+              placeholder="Search by title, author, ISBN, or genre..."
               className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-[#1a1a1e] border border-[#ded9cf] dark:border-[#27272a] rounded-lg text-xs text-[#1a1a1a] dark:text-[#f4f4f5] placeholder-[#9c978f] focus:outline-none focus:border-[#ff6719] transition-all"
             />
             {searchQuery && (
@@ -150,7 +150,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                 onClick={() => setSearchQuery('')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8a857c] hover:text-[#1a1a1a] dark:hover:text-white"
               >
-                Hapus
+                Clear
               </button>
             )}
           </div>
@@ -162,9 +162,9 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
               onChange={(e) => setAvailabilityFilter(e.target.value as any)}
               className="px-3 py-2.5 bg-white dark:bg-[#1a1a1e] border border-[#ded9cf] dark:border-[#27272a] rounded-lg text-xs text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
             >
-              <option value="all">Semua Status Stok</option>
-              <option value="available">Tersedia untuk Dipinjam</option>
-              <option value="borrowed">Seluruh Slot Sedang Dipinjam</option>
+              <option value="all">All Availability</option>
+              <option value="available">Available to Borrow</option>
+              <option value="borrowed">Currently Loaned Out</option>
             </select>
 
             {/* Sort selector */}
@@ -173,9 +173,9 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
               onChange={(e) => setSortBy(e.target.value as any)}
               className="px-3 py-2.5 bg-white dark:bg-[#1a1a1e] border border-[#ded9cf] dark:border-[#27272a] rounded-lg text-xs text-[#1a1a1a] dark:text-[#f4f4f5] focus:outline-none focus:border-[#ff6719]"
             >
-              <option value="popular">Paling Populer</option>
-              <option value="rating">Rating Tertinggi</option>
-              <option value="newest">Baru Ditambahkan</option>
+              <option value="popular">Most Popular</option>
+              <option value="rating">Highest Rated</option>
+              <option value="newest">Recently Added</option>
             </select>
           </div>
         </div>
@@ -219,9 +219,9 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
       {filteredBooks.length === 0 && (
         <div className="text-center py-16 bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#eae6df] dark:border-[#27272a] p-8">
           <BookOpen className="w-12 h-12 text-[#bfb9ae] dark:text-[#52525b] mx-auto mb-3" />
-          <h3 className="font-editorial text-xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Buku Tidak Ditemukan</h3>
+          <h3 className="font-editorial text-xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">No Books Found</h3>
           <p className="text-xs text-[#706c64] dark:text-[#a1a1aa] max-w-md mx-auto mt-1 leading-relaxed">
-            Tidak ada buku yang sesuai dengan pencarian atau filter Anda. Coba kata kunci lain atau ajukan permintaan buku baru.
+            No titles match your current search criteria or category filter. Try different keywords or request a new title.
           </p>
           <button
             onClick={() => {
@@ -231,7 +231,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
             }}
             className="mt-4 px-4 py-2 bg-[#f4f1ea] dark:bg-[#202024] hover:bg-[#eae6dc] dark:hover:bg-[#28282e] text-xs font-semibold text-[#1a1a1a] dark:text-[#f4f4f5] rounded-lg transition-colors border border-[#ded8cc] dark:border-[#333]"
           >
-            Reset Semua Filter
+            Reset All Filters
           </button>
         </div>
       )}
@@ -264,7 +264,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                         ? 'bg-emerald-600/90 text-white'
                         : 'bg-stone-800/90 text-stone-200'
                     }`}>
-                      {isAvailable ? `${book.availableCopies} dari ${book.totalCopies} slot` : 'Habis Dipinjam'}
+                      {isAvailable ? `${book.availableCopies} of ${book.totalCopies} copies` : 'Unavailable'}
                     </span>
                   </div>
 
@@ -279,7 +279,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                         ? 'bg-[#ff6719] text-white' 
                         : 'bg-black/30 hover:bg-black/50 text-white'
                     }`}
-                    title={isWishlisted ? 'Hapus dari Wishlist' : 'Tambah ke Wishlist'}
+                    title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
                   >
                     <Bookmark className="w-3.5 h-3.5 fill-current" />
                   </button>
@@ -311,7 +311,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                   {/* Bottom Action Row */}
                   <div className="mt-4 pt-3 border-t border-[#f4f2ee] dark:border-[#27272a] flex items-center justify-between gap-2">
                     <span className="text-[11px] text-[#8c8880] dark:text-[#71717a]">
-                      {book.borrowCount}x dipinjam
+                      {book.borrowCount} loans
                     </span>
 
                     {isUserBorrowing ? (
@@ -323,21 +323,21 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                         className="px-3 py-1.5 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-semibold rounded-md transition-colors flex items-center gap-1 shadow-xs"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
-                        <span>Baca</span>
+                        <span>Read</span>
                       </button>
                     ) : isAvailable ? (
                       <button
                         onClick={(e) => handleBorrow(book, e)}
                         className="px-3 py-1.5 bg-[#1a1a1a] dark:bg-white hover:bg-[#333] dark:hover:bg-[#e4e4e7] text-white dark:text-[#1a1a1a] text-xs font-semibold rounded-md transition-colors shadow-xs"
                       >
-                        Pinjam ({systemSettings.borrowDurationDays}h)
+                        Borrow ({systemSettings.borrowDurationDays}d)
                       </button>
                     ) : (
                       <button
                         onClick={(e) => handleNotifyWaitlist(book, e)}
                         className="px-2.5 py-1.5 bg-[#f0ede6] dark:bg-[#202024] hover:bg-[#e2ded5] dark:hover:bg-[#28282e] text-[#59554e] dark:text-[#a1a1aa] text-xs font-medium rounded-md transition-colors"
                       >
-                        Antre
+                        Waitlist
                       </button>
                     )}
                   </div>
@@ -378,7 +378,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                       {book.title}
                     </h3>
                     <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] truncate block max-w-full">
-                      Oleh {book.author} • {book.pages} hal • {book.publishedYear}
+                      By {book.author} • {book.pages} pages • {book.publishedYear}
                     </p>
 
                     <p className="text-xs text-[#706c64] dark:text-[#a1a1aa] line-clamp-1 mt-1 leading-relaxed hidden sm:block">
@@ -392,7 +392,7 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                     <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${
                       isAvailable ? 'bg-emerald-50 dark:bg-[#142616] text-emerald-700 dark:text-emerald-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
                     }`}>
-                      {isAvailable ? `${book.availableCopies} dari ${book.totalCopies} slot` : 'Habis'}
+                      {isAvailable ? `${book.availableCopies} of ${book.totalCopies} copies` : 'Unavailable'}
                     </span>
                     <div className="text-[10px] text-[#8c8880] dark:text-[#71717a] mt-1 flex items-center gap-1">
                       <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
@@ -424,21 +424,21 @@ export const LibraryView: React.FC<LibraryViewProps> = ({ onSelectBook, onOpenRe
                         className="px-3.5 py-2 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
                       >
                         <BookOpen className="w-3.5 h-3.5" />
-                        <span>Baca</span>
+                        <span>Read</span>
                       </button>
                     ) : isAvailable ? (
                       <button
                         onClick={(e) => handleBorrow(book, e)}
                         className="px-3.5 py-2 bg-[#1a1a1a] dark:bg-white hover:bg-[#333] dark:hover:bg-[#e4e4e7] text-white dark:text-[#1a1a1a] text-xs font-semibold rounded-lg transition-colors whitespace-nowrap shadow-xs"
                       >
-                        Pinjam Buku
+                        Borrow
                       </button>
                     ) : (
                       <button
                         onClick={(e) => handleNotifyWaitlist(book, e)}
                         className="px-3.5 py-2 bg-[#f0ede6] dark:bg-[#202024] hover:bg-[#e2ded5] dark:hover:bg-[#28282e] text-[#59554e] dark:text-[#a1a1aa] text-xs font-medium rounded-lg transition-colors whitespace-nowrap"
                       >
-                        Antre
+                        Waitlist
                       </button>
                     )}
                   </div>

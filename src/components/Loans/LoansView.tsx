@@ -56,13 +56,13 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs uppercase tracking-widest font-semibold text-[#ff6719]">
-              Sirkulasi & Rak Bacaan Anda
+              Circulation & Reading Shelf
             </span>
             <h1 className="font-editorial text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#1a1a1a] dark:text-[#f4f4f5] mt-1">
-              Buku Saya & Status Peminjaman
+              My Books & Loan Status
             </h1>
             <p className="text-xs sm:text-sm text-[#59554e] dark:text-[#a1a1aa] font-sans mt-2 max-w-2xl leading-relaxed">
-              Pantau batas waktu pengembalian, lanjutkan sesi membaca bab terakhir, perpanjang masa pinjam, atau kembalikan buku untuk membuka slot kuota.
+              Track due dates, continue your reading progress, request extensions, or return books to free up your lending quota.
             </p>
           </div>
 
@@ -70,10 +70,10 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
           <div className="bg-white dark:bg-[#1a1a1e] p-3 sm:p-3.5 rounded-xl border border-[#ded8cb] dark:border-[#27272a] shadow-xs flex items-center gap-3 self-start md:self-auto">
             <div className="text-left sm:text-right">
               <span className="text-[10px] uppercase font-bold text-[#8c8880] dark:text-[#a1a1aa] tracking-wider block">
-                Batas Kuota Pinjam
+                Active Loan Quota
               </span>
               <span className="font-editorial text-base sm:text-lg font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">
-                {activeLoans.length} dari {systemSettings.maxBorrowPerUser} Buku Aktif
+                {activeLoans.length} of {systemSettings.maxBorrowPerUser} Active Loans
               </span>
             </div>
             <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-full bg-[#fff0e6] dark:bg-[#ff6719]/15 text-[#ff6719] flex items-center justify-center font-bold text-xs border border-[#ffd8c2] dark:border-[#ff6719]/30 flex-shrink-0">
@@ -93,7 +93,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
               : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
           }`}
         >
-          Sedang Dipinjam ({activeLoans.length})
+          Active Loans ({activeLoans.length})
         </button>
         <button
           onClick={() => setActiveSubTab('riwayat')}
@@ -103,7 +103,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
               : 'text-[#6b6760] dark:text-[#a1a1aa] hover:text-[#1a1a1a] dark:hover:text-white hover:bg-[#f0ede6] dark:hover:bg-[#202024]'
           }`}
         >
-          Riwayat Pengembalian ({returnedLoans.length})
+          Loan History ({returnedLoans.length})
         </button>
       </div>
 
@@ -127,15 +127,15 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
           {activeLoans.length === 0 ? (
             <div className="text-center py-16 bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#eae6df] dark:border-[#27272a] p-8">
               <BookOpen className="w-12 h-12 text-[#bfb9ae] dark:text-[#52525b] mx-auto mb-3" />
-              <h3 className="font-editorial text-xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Tidak Ada Buku yang Sedang Dipinjam</h3>
+              <h3 className="font-editorial text-xl font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">No Books Currently on Loan</h3>
               <p className="text-xs text-[#706c64] dark:text-[#a1a1aa] max-w-md mx-auto mt-1 leading-relaxed">
-                Anda memiliki {systemSettings.maxBorrowPerUser} kuota peminjaman yang siap digunakan. Jelajahi katalog buku untuk memilih bacaan baru.
+                You have {systemSettings.maxBorrowPerUser} available borrowing slots ready to use. Browse the digital catalog to discover your next book.
               </p>
               <button
                 onClick={() => onNavigateTab('library')}
                 className="mt-4 px-5 py-2.5 bg-[#ff6719] hover:bg-[#e85608] text-white text-xs font-semibold rounded-lg transition-colors shadow-xs"
               >
-                Jelajahi Katalog Buku →
+                Explore the Catalog →
               </button>
             </div>
           ) : (
@@ -161,17 +161,17 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
                               ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800 animate-pulse' 
                               : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                           }`}>
-                            {remainingDays > 0 ? `Sisa ${remainingDays} Hari Lagi` : 'Jatuh Tempo Hari Ini'}
+                            {remainingDays > 0 ? `${remainingDays} Days Left` : 'Due Today'}
                           </span>
                           {loan.extensionsCount > 0 && (
                             <span className="text-[10px] text-[#8c8880] dark:text-[#a1a1aa] bg-[#f5f2eb] dark:bg-[#25252a] px-2 py-0.5 rounded">
-                              Diperpanjang +{systemSettings.maxExtendDays}h
+                              Extended +{systemSettings.maxExtendDays}d
                             </span>
                           )}
                         </div>
 
                         <span className="text-[11px] text-[#8c8880] dark:text-[#71717a]">
-                          Jatuh tempo: {new Date(loan.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          Due: {new Date(loan.dueDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                         </span>
                       </div>
 
@@ -193,12 +193,12 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
                           >
                             {book.title}
                           </h3>
-                          <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-0.5">Oleh {book.author}</p>
+                          <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] mt-0.5">By {book.author}</p>
 
                           {/* Progress bar */}
                           <div className="mt-3">
                             <div className="flex items-center justify-between text-[11px] text-[#706c64] dark:text-[#a1a1aa] mb-1">
-                              <span>Progres Membaca</span>
+                              <span>Reading Progress</span>
                               <span className="font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">{loan.progressPercentage}%</span>
                             </div>
                             <div className="w-full bg-[#f0ede6] dark:bg-[#28282d] h-2 rounded-full overflow-hidden">
@@ -219,7 +219,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
                         className="px-3.5 sm:px-4 py-2 bg-[#ff6719] hover:bg-[#e85608] text-white font-semibold rounded-lg shadow-xs transition-colors flex items-center gap-1.5"
                       >
                         <BookOpen className="w-4 h-4" />
-                        <span>Buka & Lanjut Baca</span>
+                        <span>Open & Continue Reading</span>
                       </button>
 
                       <div className="flex items-center gap-2">
@@ -227,18 +227,18 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
                           <button
                             onClick={() => handleExtend(loan.id)}
                             className="px-3 py-2 bg-[#f4f1ea] dark:bg-[#202024] hover:bg-[#eae6dc] dark:hover:bg-[#28282e] text-[#333] dark:text-[#f4f4f5] font-medium rounded-lg transition-colors border border-[#ded8cc] dark:border-[#333]"
-                            title="Perpanjang batas waktu peminjaman"
+                            title="Extend loan duration"
                           >
-                            +{systemSettings.maxExtendDays}h
+                            +{systemSettings.maxExtendDays}d
                           </button>
                         )}
 
                         <button
                           onClick={() => setConfirmReturnLoan({ id: loan.id, title: book.title })}
                           className="px-3 py-2 bg-white dark:bg-[#1a1a1e] hover:bg-stone-50 dark:hover:bg-[#25252b] text-stone-700 dark:text-stone-300 font-medium rounded-lg transition-colors border border-[#ded8cb] dark:border-[#333]"
-                          title="Kembalikan buku sekarang"
+                          title="Return book now"
                         >
-                          Kembalikan
+                          Return
                         </button>
                       </div>
                     </div>
@@ -252,13 +252,13 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
           <div className="p-4 sm:p-5 bg-[#faf7f0] dark:bg-[#1c1c20] border border-[#e6dfd1] dark:border-[#27272a] rounded-xl flex items-start gap-3 sm:gap-4 text-xs text-[#59554e] dark:text-[#a1a1aa]">
             <ShieldCheck className="w-5 h-5 text-[#ff6719] flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h4 className="font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Ketentuan Peminjaman Digital Libraria</h4>
+              <h4 className="font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">Digital Lending Guidelines</h4>
               <p className="leading-relaxed">
-                • Kuota maksimal: {systemSettings.maxBorrowPerUser} buku aktif secara bersamaan per akun pembaca.
+                • Quota limit: Up to {systemSettings.maxBorrowPerUser} active titles simultaneously per reader account.
                 <br />
-                • Durasi masa pinjam: {systemSettings.borrowDurationDays} hari sejak tanggal peminjaman.
+                • Loan period: {systemSettings.borrowDurationDays} days from checkout timestamp.
                 <br />
-                • Pengembalian Otomatis (Auto-Return): Sistem otomatis melepaskan slot peminjaman begitu tanggal jatuh tempo terlewati melalui cron scheduler harian.
+                • Automated Return: The platform automatically releases digital licenses upon reaching the due date via an automated daily schedule.
               </p>
             </div>
           </div>
@@ -270,7 +270,7 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
         <div className="space-y-3 sm:space-y-4">
           {returnedLoans.length === 0 ? (
             <div className="text-center py-12 bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#eae6df] dark:border-[#27272a] p-6 text-xs text-[#8c8880] dark:text-[#71717a]">
-              Belum ada riwayat buku yang selesai dipinjam atau dikembalikan.
+              No borrowing history yet.
             </div>
           ) : (
             returnedLoans.map(loan => {
@@ -290,9 +290,9 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
                     />
                     <div>
                       <h4 className="font-editorial text-sm font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">{book.title}</h4>
-                      <p className="text-xs text-[#59554e] dark:text-[#a1a1aa]">Karya {book.author}</p>
+                      <p className="text-xs text-[#59554e] dark:text-[#a1a1aa]">By {book.author}</p>
                       <p className="text-[11px] text-[#8c8880] dark:text-[#71717a] mt-0.5">
-                        Dipinjam: {new Date(loan.borrowedAt).toLocaleDateString('id-ID')} • Dikembalikan: {loan.returnedAt ? new Date(loan.returnedAt).toLocaleDateString('id-ID') : 'Selesai'}
+                        Borrowed: {new Date(loan.borrowedAt).toLocaleDateString('en-US')} • Returned: {loan.returnedAt ? new Date(loan.returnedAt).toLocaleDateString('en-US') : 'Completed'}
                       </p>
                     </div>
                   </div>
@@ -300,14 +300,14 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
                   <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-[#f4f2ee] dark:border-[#27272a]">
                     <span className="text-xs px-2.5 py-1 rounded bg-[#eef8ee] dark:bg-[#142616] text-[#1b5e20] dark:text-[#4ade80] font-semibold flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>Telah Dikembalikan</span>
+                      <span>Returned</span>
                     </span>
 
                     <button
                       onClick={() => onSelectBook(book)}
                       className="px-3 py-1.5 bg-[#f4f1ea] dark:bg-[#202024] hover:bg-[#eae6dc] dark:hover:bg-[#28282e] text-xs font-semibold rounded-md border border-[#ded8cc] dark:border-[#333] text-[#1a1a1a] dark:text-[#f4f4f5] transition-colors"
                     >
-                      Pinjam Ulang
+                      Borrow Again
                     </button>
                   </div>
                 </div>
@@ -322,23 +322,23 @@ export const LoansView: React.FC<LoansViewProps> = ({ onOpenReader, onSelectBook
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white dark:bg-[#1a1a1e] rounded-xl border border-[#ded8cb] dark:border-[#27272a] p-6 max-w-sm w-full shadow-2xl space-y-4">
             <h3 className="font-editorial text-lg font-bold text-[#1a1a1a] dark:text-[#f4f4f5]">
-              Kembalikan Buku Lebih Awal?
+              Return Book Early?
             </h3>
             <p className="text-xs text-[#59554e] dark:text-[#a1a1aa] leading-relaxed">
-              Apakah Anda yakin ingin mengembalikan buku <strong>"{confirmReturnLoan.title}"</strong>? Slot kuota peminjaman Anda akan langsung terbebas.
+              Are you sure you want to return <strong>"{confirmReturnLoan.title}"</strong>? Your borrow quota slot will be freed immediately.
             </p>
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
                 onClick={() => setConfirmReturnLoan(null)}
                 className="px-3.5 py-2 text-xs font-semibold rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-[#59554e] dark:text-[#a1a1aa] transition-colors"
               >
-                Batal
+                Cancel
               </button>
               <button
                 onClick={() => handleReturn(confirmReturnLoan.id)}
                 className="px-4 py-2 text-xs font-semibold rounded-lg bg-[#ff6719] hover:bg-[#e85608] text-white shadow-xs transition-colors"
               >
-                Ya, Kembalikan
+                Yes, Return Book
               </button>
             </div>
           </div>

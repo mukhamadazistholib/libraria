@@ -201,7 +201,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
     setShowHighlightModal(false);
     setSelectedQuote('');
     setNoteText('');
-    setHighlightToast('Kutipan berhasil disimpan ke profil Anda!');
+    setHighlightToast('Highlight saved to your profile!');
     setTimeout(() => setHighlightToast(null), 3000);
   };
 
@@ -235,7 +235,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
     },
     nightBlue: {
       wrapper: 'bg-[#0f172a] text-[#cbd5e1]',
-      bookPage: 'bg-[#1e293b] text-[#e2e8f0] border-[#334155]',
+      bookPage: 'bg-[#1e293b] text-[#cbd5e1] border-[#334155]',
       header: 'bg-[#0f172a]/95 text-[#e2e8f0] border-[#334155]',
       spineShadow: 'shadow-[inset_0_0_30px_rgba(0,0,0,0.7)]',
     },
@@ -254,7 +254,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
           <button
             onClick={onClose}
             className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
-            title="Keluar dari Reader"
+            title="Exit Reader"
           >
             <X className="w-5 h-5" />
           </button>
@@ -262,10 +262,10 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
           <button
             onClick={() => setShowToc(!showToc)}
             className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-            title="Daftar Isi"
+            title="Table of Contents"
           >
             <Menu className="w-4 h-4" />
-            <span className="hidden md:inline">Daftar Isi</span>
+            <span className="hidden md:inline">Table of Contents</span>
           </button>
 
           <div className="h-4 w-px bg-current opacity-20 hidden sm:block"></div>
@@ -275,7 +275,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
               {book.title}
             </h1>
             <p className="text-[11px] opacity-75 truncate max-w-[140px] sm:max-w-xs">
-              {currentChapter ? currentChapter.title : 'Bab'} • {book.author}
+              {currentChapter ? currentChapter.title : 'Chapter'} • {book.author}
             </p>
           </div>
         </div>
@@ -283,7 +283,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
         {/* Center Google Play Books badge */}
         <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full text-[11px] bg-[#ff6719]/10 text-[#ff6719] border border-[#ff6719]/25 font-semibold">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Google Play Books Sensasi Kertas 3D</span>
+          <span>3D Interactive Page Turn</span>
         </div>
 
         {/* Right HUD Controls */}
@@ -294,7 +294,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             className={`p-2 rounded-lg transition-colors ${
               soundEnabled ? 'text-[#ff6719]' : 'opacity-50 hover:opacity-100'
             }`}
-            title={soundEnabled ? 'Suara Lipatan Kertas: Aktif' : 'Suara Lipatan Kertas: Senyap'}
+            title={soundEnabled ? 'Page Turn Audio: Enabled' : 'Page Turn Audio: Muted'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
@@ -304,7 +304,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             <button
               onClick={() => setViewMode(viewMode === 'single' ? 'double' : 'single')}
               className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-colors hidden sm:block"
-              title={viewMode === 'double' ? 'Ganti ke Tampilan 1 Halaman' : 'Ganti ke Tampilan 2 Halaman (Buku Terbuka)'}
+              title={viewMode === 'double' ? 'Switch to Single Page View' : 'Switch to Two-Page Spread'}
             >
               {viewMode === 'double' ? <Columns className="w-4 h-4 text-[#ff6719]" /> : <Square className="w-4 h-4" />}
             </button>
@@ -316,7 +316,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             className={`p-2 rounded-lg transition-colors ${
               isCurrentBookmarked ? 'text-[#ff6719]' : 'hover:bg-black/5 dark:hover:bg-white/10'
             }`}
-            title="Tandai Halaman (Bookmark)"
+            title="Bookmark Chapter"
           >
             <Bookmark className={`w-4 h-4 ${isCurrentBookmarked ? 'fill-current' : ''}`} />
           </button>
@@ -329,7 +329,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
               setShowHighlightModal(true);
             }}
             className="p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 text-[#ff6719]"
-            title="Catat Kutipan / Anotasi"
+            title="Add Highlight & Note"
           >
             <Highlighter className="w-4 h-4" />
           </button>
@@ -340,7 +340,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             className={`p-2 rounded-lg transition-colors ${
               showSettings ? 'bg-[#ff6719] text-white' : 'hover:bg-black/5 dark:hover:bg-white/10'
             }`}
-            title="Pengaturan Tampilan & Warna"
+            title="Reader Display Settings"
           >
             <Sliders className="w-4 h-4" />
           </button>
@@ -354,7 +354,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
         }`}>
           {/* Font Size Selector */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold opacity-75">Ukuran Teks:</span>
+            <span className="font-semibold opacity-75">Font Size:</span>
             <div className="flex items-center p-0.5 bg-black/5 dark:bg-white/5 rounded-lg">
               {(['sm', 'md', 'lg', 'xl'] as const).map(size => (
                 <button
@@ -372,7 +372,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
 
           {/* Font Family Selector */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold opacity-75">Tipografi:</span>
+            <span className="font-semibold opacity-75">Typography:</span>
             <div className="flex items-center p-0.5 bg-black/5 dark:bg-white/5 rounded-lg">
               <button
                 onClick={() => setFontFamily('serif')}
@@ -380,7 +380,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                   fontFamily === 'serif' ? 'bg-[#ff6719] text-white font-bold shadow-xs' : 'opacity-70'
                 }`}
               >
-                Serif Sastra
+                Literary Serif
               </button>
               <button
                 onClick={() => setFontFamily('sans')}
@@ -388,14 +388,14 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                   fontFamily === 'sans' ? 'bg-[#ff6719] text-white font-bold shadow-xs' : 'opacity-70'
                 }`}
               >
-                Sans Modern
+                Clean Sans
               </button>
             </div>
           </div>
 
           {/* Theme Palette */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-semibold opacity-75">Kertas:</span>
+            <span className="font-semibold opacity-75">Theme:</span>
             <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
               <button
                 onClick={() => setReaderTheme('sepia')}
@@ -413,7 +413,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                 }`}
               >
                 <Sun className="w-3 h-3 text-amber-500" />
-                <span>Putih</span>
+                <span>Light</span>
               </button>
               <button
                 onClick={() => setReaderTheme('dark')}
@@ -422,7 +422,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                 }`}
               >
                 <Moon className="w-3 h-3 text-indigo-400" />
-                <span>Gelap</span>
+                <span>Dark</span>
               </button>
               <button
                 onClick={() => setReaderTheme('nightBlue')}
@@ -430,7 +430,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                   readerTheme === 'nightBlue' ? 'border-[#ff6719] bg-[#1e293b] text-blue-100 ring-2 ring-[#ff6719]/40' : 'bg-[#1e293b] text-blue-200 border-white/10'
                 }`}
               >
-                <span>Malam</span>
+                <span>Night</span>
               </button>
             </div>
           </div>
@@ -447,7 +447,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
         {showToc && (
           <aside className={`w-72 sm:w-80 border-r flex flex-col z-30 transition-all shadow-xl ${currentTheme.header}`}>
             <div className="p-4 border-b flex items-center justify-between">
-              <h3 className="font-editorial text-sm font-bold">Daftar Isi Naskah</h3>
+              <h3 className="font-editorial text-sm font-bold">Table of Contents</h3>
               <button onClick={() => setShowToc(false)} className="opacity-70 hover:opacity-100 p-1">
                 <X className="w-4 h-4" />
               </button>
@@ -477,8 +477,8 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             </div>
 
             <div className="p-3 border-t text-[11px] opacity-75 flex items-center justify-between">
-              <span>{chapters.length} Bab Terdaftar</span>
-              <span className="font-bold text-[#ff6719]">{progressPercentage}% Selesai</span>
+              <span>{chapters.length} Chapters</span>
+              <span className="font-bold text-[#ff6719]">{progressPercentage}% Completed</span>
             </div>
           </aside>
         )}
@@ -490,7 +490,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             onClick={handlePrevPage}
             disabled={currentChapterIdx === 0 || !!isFlipping}
             className="absolute left-1 sm:left-4 z-20 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-black/15 hover:bg-black/25 dark:bg-white/10 dark:hover:bg-white/20 text-current flex items-center justify-center backdrop-blur-xs disabled:opacity-0 disabled:pointer-events-none transition-all shadow-md active:scale-95"
-            title="Halaman Sebelumnya (Lipatan Kertas Balik)"
+            title="Previous Chapter"
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -500,7 +500,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             onClick={handleNextPage}
             disabled={currentChapterIdx >= chapters.length - 1 || !!isFlipping}
             className="absolute right-1 sm:right-4 z-20 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-black/15 hover:bg-black/25 dark:bg-white/10 dark:hover:bg-white/20 text-current flex items-center justify-center backdrop-blur-xs disabled:opacity-0 disabled:pointer-events-none transition-all shadow-md active:scale-95"
-            title="Halaman Selanjutnya (Sensasi Lipatan Kertas)"
+            title="Next Chapter"
           >
             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
@@ -524,7 +524,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             {isPreviewOnly && (
               <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 px-3 py-1 rounded-full bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-500/30 text-[11px] font-semibold flex items-center gap-1.5 shadow-sm">
                 <Lock className="w-3 h-3" />
-                <span>Pratinjau Bab • Pinjam untuk simpan catatan</span>
+                <span>Chapter Preview • Borrow to save annotations</span>
               </div>
             )}
 
@@ -534,7 +534,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                 <div>
                   <div className="flex items-center justify-between text-[11px] opacity-60 pb-3 border-b border-current/10 mb-5">
                     <span className="truncate">{book.title}</span>
-                    <span>Hal. {currentChapterIdx + 1}</span>
+                    <span>p. {currentChapterIdx + 1}</span>
                   </div>
 
                   {currentChapter && (
@@ -551,7 +551,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                 </div>
 
                 <div className="pt-4 mt-6 border-t border-current/10 text-center text-[10px] opacity-50">
-                  {currentChapter?.readTimeMinutes} menit waktu baca
+                  {currentChapter?.readTimeMinutes} min read
                 </div>
 
                 {/* Right edge shadow for left page (book spine crease) */}
@@ -576,10 +576,10 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
               <div>
                 <div className="flex items-center justify-between text-[11px] opacity-60 pb-3 border-b border-current/10 mb-5">
                   <span className="truncate">
-                    {effectiveViewMode === 'double' && nextChapter ? nextChapter.title : (currentChapter?.title || 'Baca')}
+                    {effectiveViewMode === 'double' && nextChapter ? nextChapter.title : (currentChapter?.title || 'Read')}
                   </span>
                   <span>
-                    Hal. {effectiveViewMode === 'double' ? currentChapterIdx + 2 : currentChapterIdx + 1}
+                    p. {effectiveViewMode === 'double' ? currentChapterIdx + 2 : currentChapterIdx + 1}
                   </span>
                 </div>
 
@@ -597,8 +597,8 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                   ) : (
                     <div className="h-64 flex flex-col items-center justify-center text-center opacity-60 space-y-2">
                       <BookOpen className="w-10 h-10 stroke-1" />
-                      <p className="font-editorial text-lg font-semibold">Akhir Naskah Digital</p>
-                      <p className="text-xs">Anda telah menuntaskan seluruh bab yang tersedia dalam lisensi buku ini.</p>
+                      <p className="font-editorial text-lg font-semibold">End of Digital Edition</p>
+                      <p className="text-xs">You have reached the end of the available chapters for this title.</p>
                     </div>
                   )
                 ) : (
@@ -613,14 +613,14 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                       />
                     </>
                   ) : (
-                    <p className="text-center opacity-60 py-12">Bab tidak ditemukan.</p>
+                    <p className="text-center opacity-60 py-12">Chapter not found.</p>
                   )
                 )}
               </div>
 
               <div className="pt-4 mt-6 border-t border-current/10 flex items-center justify-between text-[10px] opacity-50">
-                <span>Ketuk area tengah untuk sembunyikan/tampilkan menu</span>
-                <span>Bab {currentChapterIdx + 1} dari {chapters.length}</span>
+                <span>Tap center to toggle controls</span>
+                <span>Chapter {currentChapterIdx + 1} of {chapters.length}</span>
               </div>
             </div>
 
@@ -658,7 +658,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             onClick={handlePrevPage}
             disabled={currentChapterIdx === 0 || !!isFlipping}
             className="p-1 sm:p-1.5 rounded-md border border-current/15 hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-30 transition-all flex items-center gap-0.5 sm:hidden flex-shrink-0"
-            title="Halaman Sebelumnya"
+            title="Previous Chapter"
           >
             <ChevronLeft className="w-3.5 h-3.5" />
             <span className="text-[10px] font-semibold">Prev</span>
@@ -683,14 +683,14 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
           </div>
 
           <span className="text-[10px] sm:text-[11px] opacity-75 min-w-[55px] sm:min-w-[70px] text-right">
-            Bab {currentChapterIdx + 1}/{chapters.length}
+            Chapter {currentChapterIdx + 1}/{chapters.length}
           </span>
 
           <button
             onClick={handleNextPage}
             disabled={currentChapterIdx >= chapters.length - 1 || !!isFlipping}
             className="p-1 sm:p-1.5 rounded-md border border-current/15 hover:bg-black/5 dark:hover:bg-white/10 disabled:opacity-30 transition-all flex items-center gap-0.5 sm:hidden flex-shrink-0"
-            title="Halaman Selanjutnya"
+            title="Next Chapter"
           >
             <span className="text-[10px] font-semibold">Next</span>
             <ChevronRight className="w-3.5 h-3.5" />
@@ -702,15 +702,15 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
           {highlightToast ? (
             <span className="text-emerald-600 font-bold">{highlightToast}</span>
           ) : (
-            <span className="hidden md:inline">Gunakan Tombol Panah ← / → atau Sentuh untuk membalik halaman</span>
+            <span className="hidden md:inline">Use Arrow keys ← / → or click sides to turn pages</span>
           )}
           
           <button
             onClick={() => setHudVisible(false)}
             className="px-2.5 py-1 rounded bg-black/5 dark:bg-white/10 text-current hover:opacity-100 transition-opacity"
-            title="Masuk Mode Baca Layar Penuh (Immersive)"
+            title="Enter Immersive Full Screen"
           >
-            Layar Penuh
+            Full Screen
           </button>
         </div>
       </footer>
@@ -721,7 +721,7 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
           <div className="bg-white dark:bg-[#1a1a1e] text-[#1a1a1a] dark:text-[#f4f4f5] max-w-md w-full rounded-2xl p-5 border border-[#ded8cb] dark:border-[#333] shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b pb-2.5 border-stone-200 dark:border-stone-700">
               <h3 className="font-semibold text-xs uppercase tracking-wider text-[#ff6719]">
-                Catat Kutipan & Refleksi
+                Save Highlight & Reflection
               </h3>
               <button onClick={() => setShowHighlightModal(false)} className="text-stone-400 hover:text-stone-700">
                 <X className="w-4 h-4" />
@@ -729,22 +729,22 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-stone-500 uppercase">Kutipan Teks</label>
+              <label className="text-[11px] font-semibold text-stone-500 uppercase">Highlighted Quote</label>
               <textarea
                 value={selectedQuote}
                 onChange={(e) => setSelectedQuote(e.target.value)}
-                placeholder="Tuliskan atau salin kalimat kutipan yang berkesan..."
+                placeholder="Enter or paste a memorable excerpt..."
                 rows={3}
                 className="w-full mt-1 p-2.5 text-xs bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg focus:outline-none focus:border-[#ff6719]"
               />
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-stone-500 uppercase">Refleksi / Catatan Pribadi (Opsional)</label>
+              <label className="text-[11px] font-semibold text-stone-500 uppercase">Personal Reflection (Optional)</label>
               <textarea
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
-                placeholder="Apa arti kutipan ini bagi pemikiran Anda saat ini?"
+                placeholder="What does this passage mean to you?"
                 rows={2}
                 className="w-full mt-1 p-2.5 text-xs bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg focus:outline-none focus:border-[#ff6719]"
               />
@@ -755,14 +755,14 @@ export const EpubReaderModal: React.FC<EpubReaderModalProps> = ({ book, onClose 
                 onClick={() => setShowHighlightModal(false)}
                 className="px-3 py-1.5 text-xs text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-md"
               >
-                Batal
+                Cancel
               </button>
               <button
                 onClick={handleSaveHighlight}
                 disabled={!selectedQuote.trim()}
                 className="px-4 py-1.5 bg-[#ff6719] hover:bg-[#e85608] disabled:opacity-50 text-white text-xs font-semibold rounded-md transition-colors shadow-xs"
               >
-                Simpan ke Rak Kutipan
+                Save to Highlights
               </button>
             </div>
           </div>

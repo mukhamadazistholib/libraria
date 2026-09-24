@@ -117,12 +117,12 @@ export async function seedSupabaseDatabase(): Promise<SeedResult> {
   if (!isSupabaseConfigured) {
     return {
       success: false,
-      message: 'Supabase Anon Key belum disetel. Buka modal Masuk untuk memasukkan Anon Key.',
+      message: 'Supabase Anon Key is not configured. Open the Sign In dialog to configure the Anon Key.',
     };
   }
 
   try {
-    // 1. Masukkan Kategori (abaikan 'cat-all')
+    // 1. Insert Categories (except 'cat-all')
     const categoriesToInsert = INITIAL_CATEGORIES
       .filter(c => c.id !== 'cat-all')
       .map(c => ({
@@ -136,10 +136,10 @@ export async function seedSupabaseDatabase(): Promise<SeedResult> {
       .upsert(categoriesToInsert, { onConflict: 'id' });
 
     if (catError) {
-      throw new Error(`Gagal menyimpan Kategori: ${catError.message}`);
+      throw new Error(`Failed to save Categories: ${catError.message}`);
     }
 
-    // 2. Masukkan Buku
+    // 2. Insert Books
     const now = new Date().toISOString();
     const booksToInsert = INITIAL_BOOKS.map(b => ({
       id: b.id,
@@ -168,10 +168,10 @@ export async function seedSupabaseDatabase(): Promise<SeedResult> {
       .upsert(booksToInsert, { onConflict: 'id' });
 
     if (bookError) {
-      throw new Error(`Gagal menyimpan Buku: ${bookError.message}`);
+      throw new Error(`Failed to save Books: ${bookError.message}`);
     }
 
-    // 3. Masukkan Bab Buku (BookChapter)
+    // 3. Insert Book Chapters (BookChapter)
     const allChapters: any[] = [];
     INITIAL_BOOKS.forEach(b => {
       if (b.chapters && b.chapters.length > 0) {
@@ -194,13 +194,13 @@ export async function seedSupabaseDatabase(): Promise<SeedResult> {
         .upsert(allChapters, { onConflict: 'id' });
 
       if (chapError) {
-        console.warn('Catatan: Chapter tidak tersimpan sepenuhnya:', chapError.message);
+        console.warn('Note: Chapters were not completely saved:', chapError.message);
       }
     }
 
     return {
       success: true,
-      message: 'Berhasil melakukan seed data katalog buku ke database Supabase!',
+      message: 'Successfully seeded book catalog to Supabase database!',
       categoriesCount: categoriesToInsert.length,
       booksCount: booksToInsert.length,
       chaptersCount: allChapters.length,
@@ -208,7 +208,7 @@ export async function seedSupabaseDatabase(): Promise<SeedResult> {
   } catch (err: any) {
     return {
       success: false,
-      message: err.message || 'Terjadi kesalahan saat melakukan seeding database.',
+      message: err.message || 'An error occurred while seeding database.',
     };
   }
 }
